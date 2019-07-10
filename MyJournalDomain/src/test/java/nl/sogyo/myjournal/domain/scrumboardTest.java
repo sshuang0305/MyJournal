@@ -52,10 +52,4 @@ public class scrumboardTest {
 		project.getUserStories().get(0).changeBoardColumn(ScrumboardColumn.INPROGRESS);
 		assertEquals(ScrumboardColumn.INPROGRESS, project.getUserStories().get(0).getBoardColumn());
 	}
-	
-	@Test
-	public void checkIfLegalMemberTest() {
-		
-		Member notAMemberInThisTeam = new Member("Stranger");
-	}
 }

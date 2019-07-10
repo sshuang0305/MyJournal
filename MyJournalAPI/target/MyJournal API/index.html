@@ -16,13 +16,13 @@
 
         <div id="app">
             <start-screen
-                v-if="!screenShown"
-                v-on:user-confirmed="showHomeScreen">
+                v-if="!userConfirmed"
+                v-on:user-confirmed="showScreen">
             </start-screen>
 
             <home-screen
                 v-else
-                v-bind:game-state="homeState">
+                v-bind:home-screen="homeScreen">
               </home-screen>
         </div>
 
