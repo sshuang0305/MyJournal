@@ -63,9 +63,25 @@ const navigationScreen = Vue.component('navigation-screen', {
 });
 
 const journalScreen = Vue.component('journal-screen', {
+  data: function() {
+    return {
+      notes: ""
+    }
+  },
   template: `
       <div>
-          <h1> journal </h1>
+          <h1> My journal </h1>
+
+          <div class="grid-container">
+              <div class="form-group item1">
+                  <label for="exampleFormControlTextarea1">Notes</label>
+                  <textarea class="form-control" v-model="notes" id="exampleFormControlTextarea1" rows="5"></textarea>
+              </div>
+              <div class="item2">
+                  <label for="exampleFormControlTextarea1">Notes</label>
+                  {{notes}}
+              </div>
+          </div>
       </div>
   `,
 });

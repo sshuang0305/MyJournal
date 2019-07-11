@@ -10,8 +10,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import nl.sogyo.myjournal.domain.User;
-
 @Path("users")
 public class UserInitialize {
     /**
@@ -22,16 +20,19 @@ public class UserInitialize {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response initialize(
-      @Context HttpServletRequest request, User user) {
+      @Context HttpServletRequest request, Userdata user) {
 
-      String username = user.getUsername();
-      String password = user.getPassword();
-      System.out.println(username);
-      System.out.println(password);
-
-      HttpSession session= request.getSession(true);
+      // String username = user.getUsername();
+      // String password = user.getPassword();
+      // System.out.println(username);
+      // System.out.println(password);
+      //
+      // HttpSession session= request.getSession(true);
       String output = "hoi";
-      System.out.println(request);
+      // System.out.println(request);
+
+
+
       return Response.status(200).entity(output).build();
   }
 }

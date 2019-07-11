@@ -9,3 +9,22 @@ nav .navbar-nav li a{
   color: black;
   padding: 30px;
 }
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+  'header header'
+  'left right';
+  grid-template-columns: 1fr 1fr;
+}
+
+.item1 {
+  grid-area:left;
+  word-wrap: break-word;
+  overflow: auto;
+}
+.item2 {
+  grid-area:right;
+  word-wrap: break-word;
+  overflow: auto;
+}
