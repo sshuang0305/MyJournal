@@ -26,15 +26,16 @@
 
         <div id="app">
 
-            <start-screen
+            <login-screen
                 v-if="!userConfirmed"
-                v-on:user-confirmed="showScreen">
-            </start-screen>
+                v-on:user-confirmed="loggingIn">
+            </login-screen>
 
-            <home-screen
+            <navigation-screen
                 v-else
-                v-bind:home-screen="homeScreen">
-              </home-screen>
+                v-bind:navigation-screen="navigationScreen">
+                router.push('journal')
+              </navigation-screen>
         </div>
 
         <script src="main.js"></script>

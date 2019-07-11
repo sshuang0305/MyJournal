@@ -95,7 +95,7 @@
 						<port>80</port>
 					</httpConnector>
 					<webApp>
-						<contextPath>/myjournal</contextPath>
+						<contextPath>/myjournal/</contextPath>
 					</webApp>
 				</configuration>
 			</plugin>
