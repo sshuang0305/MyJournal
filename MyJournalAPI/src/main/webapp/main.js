@@ -41,7 +41,7 @@ const navigationScreen = Vue.component('navigation-screen', {
     template: `
         <div>
           <nav class="navbar navbar-expand-sm navbar-lighr bg-light flex-nowrap">
-              <span class="navbar-text w-100">Signed in as: {{navigationScreen.user}}</span>
+              <span class="navbar-text w-100">Signed in as: {{navigationScreen.username}}</span>
               <div class="navbar-collapse collapse w-100 justify-content-center">
                   <ul class="navbar-nav mx-auto">
                       <li class="nav-item">
@@ -125,6 +125,7 @@ const app = new Vue({
     },
     methods: {
         async loggingIn(username, password) {
+            router.push('journal')
             const response = await fetch('api/users', {
                 method: 'POST',
                 headers: {
@@ -132,8 +133,8 @@ const app = new Vue({
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ username: username , password: password })
-            });
-            this.navigationScreen = {"user": username, "password": password};
+            })
+            this.navigationScreen = await response.json();
         }
     }
 }).$mount('#app');

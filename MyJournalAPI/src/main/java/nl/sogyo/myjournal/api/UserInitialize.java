@@ -1,7 +1,7 @@
 package nl.sogyo.myjournal.api;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -9,6 +9,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.gson.Gson;
+
+import nl.sogyo.myjournal.domain.User;
+import nl.sogyo.myjournal.persistance.UserConnector;
 
 @Path("users")
 public class UserInitialize {
@@ -22,17 +27,22 @@ public class UserInitialize {
   public Response initialize(
       @Context HttpServletRequest request, Userdata user) {
 
-      // String username = user.getUsername();
-      // String password = user.getPassword();
-      // System.out.println(username);
-      // System.out.println(password);
-      //
-      // HttpSession session= request.getSession(true);
-      String output = "hoi";
-      // System.out.println(request);
+	   String username = user.getUsername();
+	   String password = user.getPassword();
+	   
+	   User loginUser = UserConnector.connect(username);
+	   String loginPassword = loginUser.getPassword();
+	   
+	   if (loginUser.legitUser(loginPassword, password)) {
+		   Gson gson = new Gson();
+		   String output = gson.toJson(loginUser);
+		   return Response.status(200).entity(output).build();
+	   }
 
-
-
-      return Response.status(200).entity(output).build();
+	   else {
+		   return Response.status(418).build();
+	   }
+	
+	   
   }
 }

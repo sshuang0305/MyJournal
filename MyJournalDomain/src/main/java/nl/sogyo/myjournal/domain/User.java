@@ -2,6 +2,7 @@ package nl.sogyo.myjournal.domain;
 
 import javax.persistence.*;
 
+
 @Entity
 public class User{
 
@@ -12,16 +13,12 @@ public class User{
 	private String username;
 	private String password;
 	
+	public User() {
+		
+	}
+	
 	public User(String name, String pw) {
 		this.username = name;
-		this.password = pw;
-	}
-
-	public void setUsername(String name) {
-		this.username = name;
-	}
-
-	public void setPassword(String pw) {
 		this.password = pw;
 	}
 
@@ -32,4 +29,12 @@ public class User{
 	public String getPassword() {
 		return this.password;
 	}
+	
+	public boolean legitUser(String inputPassword, String realPassword) {
+		if (this == null || !inputPassword.equals(realPassword)) {
+			return false;
+		}
+		return true;
+	}
+	
 }

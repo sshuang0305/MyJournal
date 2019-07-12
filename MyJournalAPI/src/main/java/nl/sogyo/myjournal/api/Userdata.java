@@ -13,7 +13,7 @@ public class Userdata{
 	private String password;
 
 	public Userdata() {
-		
+
 	}
 
 	public Userdata(String name, String pw) {
