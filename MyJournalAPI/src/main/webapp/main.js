@@ -16,7 +16,7 @@ Vue.component('login-screen', {
                 </br> <input type="password" placeholder="Password" v-model="password" />
                 </br> <label class="form-check-label"><input type="checkbox"> Remember me</label>
                 </br> {{ errorMessage }}
-                </br> <button class="btn btn-primary" v-on:click="confirmUser">Sign in</button>
+                </br> <button class="btn btn-info" v-on:click="confirmUser">Sign in</button>
             </div>
         </div>
     `,
@@ -65,33 +65,102 @@ const navigationScreen = Vue.component('navigation-screen', {
 const journalScreen = Vue.component('journal-screen', {
   data: function() {
     return {
-      notes: ""
+      date: undefined,
+      notes: "",
+      newNote: "",
+      tasks: [],
+      newTask: "",
     }
   },
   template: `
       <div>
           <h1> My journal </h1>
 
+          <div>
+            Today: {{ getDate }}
+          </div>
+
           <div class="grid-container">
-              <div class="form-group item1">
-                  <label for="exampleFormControlTextarea1">Notes</label>
-                  <textarea class="form-control" v-model="notes" id="exampleFormControlTextarea1" rows="5"></textarea>
+
+              <div class="task-list">
+                  <h3> TO-DO-LIST </h3>
+
+                  <div class="input-group mb-3">
+                      <input v-model="newTask" type="text" class="form-control" placeholder="TO DO ..." >
+                      <div class="input-group-append">
+                          <button v-on:click="addTask" class="btn btn-info" type="button">Add</button>
+                      </div>
+                  </div>
+
+                  <ul class="list-group" v-for="task in tasks">
+                      <input type="checkbox">
+                      <li class="list-group-item">
+                          {{task}}
+                          <button> X </button>
+                      </li>
+                  </ul>
               </div>
-              <div class="item2">
-                  <label for="exampleFormControlTextarea1">Notes</label>
-                  {{notes}}
+
+              <div class="notes paper">
+                  <h3> Notes </h3>
+                  <div> {{notes}} </div>
+                  <div>
+                      <textarea class="form-control" v-model="newNote" rows="1"></textarea>
+                      <button v-on:click="addNote" type="button" class="btn btn-info btn-block"> Add Note </button>
+                  </div>
               </div>
+
           </div>
       </div>
   `,
+  computed: {
+    getDate() {
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+
+      this.date = dd + '/' + mm + '/' + yyyy;
+      return this.date;
+    }
+  },
+  methods: {
+    addNote() {
+      this.notes += this.newNote + ' ';
+      this.newNote = "";
+    },
+    addTask() {
+        this.tasks.push(this.newTask);
+    }
+  },
 });
 
 const scrumBoard = Vue.component('scumboard-screen', {
+  data: function() {
+    return {
+      board: undefined,
+      exampleList: [
+        'item1',
+        'item2',
+        'item3'
+      ]
+    }
+  },
   template: `
       <div>
           <h1> scrumboard </h1>
+          <button v-on:click="createBoard" type="button" class="btn btn-success">Create New Project</button>
+          <div class=scrumboard>
+            {{board}}
+          </div>
       </div>
+
   `,
+  methods: {
+    createBoard() {
+        this.board = "hoi";
+    },
+  },
 });
 
 const planningPoker = Vue.component('planningpoker-screen', {
@@ -135,6 +204,9 @@ const app = new Vue({
                 body: JSON.stringify({ username: username , password: password })
             })
             this.navigationScreen = await response.json();
+            if (!this.navigationScreen) {
+                alert("Username and password do not match");
+            }
         }
     }
 }).$mount('#app');
