@@ -32,11 +32,11 @@ public class User{
 		return this.password;
 	}
 	
-	public boolean legitUser(String inputPassword) {
-		if (this.password.equals(inputPassword)) {
-			return true;
+	public static boolean legitUser(User loginUser, String inputPassword) {
+		if (loginUser == null || !loginUser.password.equals(inputPassword)) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 	
 }

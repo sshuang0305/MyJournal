@@ -31,7 +31,6 @@ public class UserInitialize {
 		String username = user.getUsername();
 		String password = user.getPassword();
 		User loginUser = UserConnector.connect(username, password);
-		System.out.println(loginUser);
 		Gson gson = new Gson();
 		String output = gson.toJson(loginUser);
 		return Response.status(200).entity(output).build();

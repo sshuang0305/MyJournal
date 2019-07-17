@@ -28,9 +28,9 @@ public class UserConnector {
 	              .uniqueResult();
 	    tx.commit();
 
-	    if (!loginUser.legitUser(password)) {
-	    	return null;
+	    if (User.legitUser(loginUser, password)) {
+	    	return loginUser;
 	    }
-	    return loginUser;
+	    return null;
 	}
 }
