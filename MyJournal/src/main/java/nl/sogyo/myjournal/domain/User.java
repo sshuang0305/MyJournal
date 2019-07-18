@@ -1,20 +1,24 @@
 package nl.sogyo.myjournal.domain;
 
 
+import java.util.Set;
+
 import javax.persistence.*;
 
 
-
 @Entity
+@Table(name = "User")
 public class User{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="user_id", updatable = false, nullable = false)
-	private int user_id;
+	private int userID;
+	
+	@Column(unique=true)
 	private String username;
 	private String password;
-	
+
 	public User() {
 
 	}
@@ -30,6 +34,10 @@ public class User{
 
 	public String getPassword() {
 		return this.password;
+	}
+	
+	public int getUserID() {
+		return this.userID;
 	}
 	
 	public static boolean legitUser(User loginUser, String inputPassword) {

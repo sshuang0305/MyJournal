@@ -11,7 +11,7 @@ import nl.sogyo.myjournal.domain.User;
 
 
 public class UserConnector {
-	
+
 	public static User connect(String username, String password) {
 		
 	    Configuration config = new Configuration().configure().addAnnotatedClass(User.class);

@@ -37,11 +37,11 @@ Vue.component('login-screen', {
 });
 
 const navigationScreen = Vue.component('navigation-screen', {
-    props: ['navigationScreen'],
+    props: ['userData'],
     template: `
         <div>
           <nav class="navbar navbar-expand-sm navbar-lighr bg-light flex-nowrap">
-              <span class="navbar-text w-100">Signed in as: {{navigationScreen.username}}</span>
+              <span class="navbar-text w-100">Signed in as: {{userData.username}}</span>
               <div class="navbar-collapse collapse w-100 justify-content-center">
                   <ul class="navbar-nav mx-auto">
                       <li class="nav-item">
@@ -57,12 +57,13 @@ const navigationScreen = Vue.component('navigation-screen', {
               </div>
               <div class="w-100"><!--spacer--></div>
           </nav>
-          <router-view></router-view>
+          <router-view v-bind:user-data="userData"> </router-view>
         </div>
     `,
 });
 
 const journalScreen = Vue.component('journal-screen', {
+  props: ['userData'],
   data: function() {
     return {
       notes: "",
@@ -77,6 +78,7 @@ const journalScreen = Vue.component('journal-screen', {
   },
   template: `
       <div>
+          <h1> {{userData}} </h1>
           <div class="header">
               <h1> JOURNAL </h1>
               Today: {{ currentDate }}
@@ -195,7 +197,20 @@ const journalScreen = Vue.component('journal-screen', {
     },
     clickedOnDay(dayInWeek) {
         this.inputDay = dayInWeek;
+    },
+    async getMyDayJournal(userData, inputDay) {
+        const response = await fetch('api/myday', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userID: this.userData.userID , date: inputDay })
+        })
     }
+  },
+  beforeMount() {
+    this.getMyDayJournal();
   },
 });
 
@@ -309,11 +324,11 @@ const app = new Vue({
     router,
     el: '#app',
     data: {
-        navigationScreen: undefined,
+        userData: undefined,
     },
     computed: {
         userConfirmed() {
-            return this.navigationScreen != undefined;
+            return this.userData != undefined;
         },
     },
     methods: {
@@ -327,8 +342,8 @@ const app = new Vue({
                 },
                 body: JSON.stringify({ username: username , password: password })
             })
-            this.navigationScreen = await response.json();
-            if (!this.navigationScreen) {
+            this.userData = await response.json();
+            if (!this.userData) {
                 alert("Username and password do not match");
             }
         }

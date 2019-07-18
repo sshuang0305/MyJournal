@@ -8,6 +8,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import nl.sogyo.myjournal.domain.Member;
+import nl.sogyo.myjournal.domain.Project;
+import nl.sogyo.myjournal.domain.ScrumboardColumn;
+
 public class scrumboardTest {
 	
 	Project project;
