@@ -8,9 +8,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import com.google.gson.Gson;
-
 import nl.sogyo.myjournal.domain.MyJournalDay;
 import nl.sogyo.myjournal.domain.User;
 import nl.sogyo.myjournal.persistance.MyDayJournalConnector;
@@ -33,8 +30,9 @@ public class DayJournalInitialize {
 			User user = dayData.getUser();
 
 			MyJournalDay journalDay = MyDayJournalConnector.connect(date, user);
-			Gson gson = new Gson();
-			String output = gson.toJson(journalDay);
+
+//			String output = "hoi";
+			String output = new JSONResultProcessor().createJournalDayResponse(journalDay);
 			return Response.status(200).entity(output).build();
 	  }
 }

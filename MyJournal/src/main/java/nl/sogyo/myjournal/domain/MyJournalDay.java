@@ -8,34 +8,35 @@ public class MyJournalDay {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="day_id", updatable = false, nullable = false)
+	@Column(name="dayID", updatable = false, nullable = false)
 	private int dayID;
 	
 	private String date;
-	private String[] toDoList;
+	private String toDoList;
 	private String notes;
 	
 	@ManyToOne
-	@JoinColumn(name="user_id", nullable=false)
+	@JoinColumn(name="userID", nullable=false)
 	private User user;
 	
 	public MyJournalDay() {
 
 	}
 	
-	public MyJournalDay(String theDate, int userID) {
+	public MyJournalDay(String theDate, User theUser) {
 		this.date = theDate;
+		this.user = theUser;
 	}
 
 	public String getDate() {
 		return date;
 	}
 
-	public String[] getToDoList() {
+	public String getToDoList() {
 		return toDoList;
 	}
 
-	public void setToDoList(String[] toDoList) {
+	public void setToDoList(String toDoList) {
 		this.toDoList = toDoList;
 	}
 
@@ -47,7 +48,7 @@ public class MyJournalDay {
 		this.notes = notes;
 	}
 
-//	public int getUserID() {
-//		return userID;
-//	}
+	public User getUser() {
+		return this.user;
+	}
 }

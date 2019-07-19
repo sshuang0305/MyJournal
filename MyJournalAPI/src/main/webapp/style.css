@@ -15,6 +15,24 @@ nav .navbar-nav li a{
   text-align: center;
 }
 
+.grid-container-login {
+  display: grid;
+  grid-template-areas:
+  'up'
+  'down';
+  grid-gap: 50px 50px;
+  align-items: center;
+}
+
+.login-container {
+  grid-area: up;
+  justify-self: center;
+}
+
+.register-container {
+  grid-area: down;
+  justify-self: center;
+}
 .grid-container {
   display: grid;
   grid-template-areas:

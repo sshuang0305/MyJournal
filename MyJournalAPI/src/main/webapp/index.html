@@ -30,7 +30,8 @@
 
             <login-screen
                 v-if="!userConfirmed"
-                v-on:user-confirmed="loggingIn">
+                v-on:user-confirmed="loggingIn"
+                v-on:user-registration-confirmed="registerUser">
             </login-screen>
 
             <navigation-screen

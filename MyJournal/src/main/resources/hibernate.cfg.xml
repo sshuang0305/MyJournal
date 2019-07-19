@@ -12,5 +12,8 @@
         <property name="hbm2ddl.auto">update</property>
         <property name="show_sql">true</property>
         <property name="javax.persistence.validation.mode">none</property>
+        <mapping class="nl.sogyo.myjournal.domain.User"/>
+        <mapping class="nl.sogyo.myjournal.domain.MyJournalDay"/>
+        
     </session-factory>
 </hibernate-configuration>

@@ -33,4 +33,22 @@ public class UserConnector {
 	    }
 	    return null;
 	}
+	
+	public static User register(String username, String password) {
+		
+	    Configuration config = new Configuration().configure().addAnnotatedClass(User.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+	
+	    Transaction tx = session.beginTransaction();
+	
+	    User newUser= new User(username, password);
+	    session.save(newUser);
+
+	    tx.commit();
+
+	    return newUser;
+
+	}
 }

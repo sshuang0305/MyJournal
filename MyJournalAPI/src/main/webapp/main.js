@@ -6,17 +6,28 @@ Vue.component('login-screen', {
         return {
             username: undefined,
             password: undefined,
+            newUsername: undefined,
+            newPassword: undefined,
             errorMessage: "",
         }
     },
     template: `
-        <div class=" h-100 d-flex justify-content-center align-items-center">
-            <div>
-                </br></br> <input placeholder="Username" v-model="username" />
-                </br> <input type="password" placeholder="Password" v-model="password" />
-                </br> <label class="form-check-label"><input type="checkbox"> Remember me</label>
-                </br> {{ errorMessage }}
-                </br> <button class="btn btn-info" v-on:click="confirmUser">Sign in</button>
+        <div>
+            <div class="grid-container-login">
+                <div class="login-container">
+                    </br></br> <input placeholder="Username" v-model="username" />
+                    </br> <input type="password" placeholder="Password" v-model="password" />
+                    </br> <label class="form-check-label"><input type="checkbox"> Remember me</label>
+                    </br> {{ errorMessage }}
+                    </br> <button class="btn btn-info" v-on:click="confirmUser">Sign in</button>
+                </div>
+                <div class="register-container">
+                    <div>
+                      </br></br> <input placeholder="New username" v-model="newUsername" />
+                      </br> <input type="password" placeholder="Password" v-model="newPassword" />
+                      </br> <button class="btn btn-info" v-on:click="registerUser">Register</button>
+                    </div>
+                </div>
             </div>
         </div>
     `,
@@ -32,6 +43,9 @@ Vue.component('login-screen', {
             }
             this.errorMessage = "";
             this.$emit('user-confirmed', this.username, this.password);
+        },
+        registerUser() {
+            this.$emit('user-registration-confirmed', this.newUsername, this.newPassword);
         }
     }
 });
@@ -205,7 +219,7 @@ const journalScreen = Vue.component('journal-screen', {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ userID: this.userData.userID , date: inputDay })
+            body: JSON.stringify({ user: this.userData , date: inputDay })
         })
     }
   },
@@ -222,6 +236,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
       projectName: "",
       userStories: [],
       userStory: "",
+      addedStories: "",
 
       boardStatus: ["BACKLOG", "TO-DO", "IN PROGRESS", "DONE"],
     }
@@ -247,6 +262,10 @@ const scrumBoard = Vue.component('scumboard-screen', {
                               <button v-on:click="addStory" class="btn btn-info"> Add </button>
                           </div>
                       </div>
+                  </div>
+
+                  <div>
+                    Added Stories: {{addedStories}}
                   </div>
 
               </form>
@@ -292,22 +311,45 @@ const scrumBoard = Vue.component('scumboard-screen', {
 
         this.newBoardForm = undefined;
         this.userStories = [];
+        this.addedStories = "";
         boardObj = {};
 
     },
     addStory() {
       this.userStories.push(this.userStory);
+      this.addedStories += this.userStory + ". ";
       this.userStory = "";
-    }
+    },
   },
 });
 
 const planningPoker = Vue.component('planningpoker-screen', {
+  data: function () {
+    return {
+      startingGameForm: undefined,
+    }
+  },
   template: `
       <div>
-          <h1> planning poker </h1>
+          <div class="header">
+              <h1> PLANNING POKER </h1>
+          </div>
+          <button v-on:click="startGame" class="btn btn-info">Start Game</button>
+          <div v-if="startingGameForm">
+              <form>
+                  <div class="form-group">
+                      <label for="projectName">Players</label>
+                      <input class="form-control" placeholder="Enter the number of players ...">
+                  </div>
+              </form>
+          </div>
       </div>
   `,
+  methods: {
+    startGame() {
+      this.startingGameForm = "";
+    }
+  },
 });
 
 const routes = [
@@ -346,6 +388,18 @@ const app = new Vue({
             if (!this.userData) {
                 alert("Username and password do not match");
             }
-        }
+        },
+        async registerUser(username, password) {
+            router.push('journal')
+            const response = await fetch('api/register', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username , password: password })
+            })
+            this.userData = await response.json();
+      }
     }
 }).$mount('#app');
