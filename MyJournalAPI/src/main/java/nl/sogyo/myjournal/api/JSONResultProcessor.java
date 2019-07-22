@@ -15,15 +15,6 @@ public class JSONResultProcessor {
 
 		return result.toJSONString();
 	}
-	
-	public String createJournalDayResponse(MyJournalDay day) {
-
-		JSONObject result = new JSONObject();
-
-        result.put("todolist", day.getToDoList());
-        result.put("notes", day.getNotes());
-		return result.toJSONString();
-	}
 }
 
 

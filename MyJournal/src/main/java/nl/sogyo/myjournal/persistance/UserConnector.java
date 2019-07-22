@@ -4,6 +4,7 @@ import org.hibernate.*;
 
 import org.hibernate.cfg.Configuration;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
@@ -42,13 +43,19 @@ public class UserConnector {
 	    Session session = sf.openSession();
 	
 	    Transaction tx = session.beginTransaction();
-	
-	    User newUser= new User(username, password);
-	    session.save(newUser);
+	    
+	    Criteria criteria = session.createCriteria(User.class);
+	    
+	    User existingUser = (User) criteria
+	              .add(Restrictions.eq("username", username))
+	              .uniqueResult();
 
-	    tx.commit();
-
-	    return newUser;
-
+	    if (existingUser == null) {
+		    User newUser= new User(username, password);
+		    session.save(newUser);
+		    tx.commit();
+		    return newUser;
+	    }
+	    return null;
 	}
 }

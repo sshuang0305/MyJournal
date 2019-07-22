@@ -114,11 +114,10 @@ const journalScreen = Vue.component('journal-screen', {
               Today: {{ currentDate }}
           </div>
 
-          <div class="grid-container">
+          <div class="grid-container-journal">
 
               <div class="task-list">
-
-                  <div class="task-list-header">
+                  <div class="header">
                       <h3> TO-DO-LIST </h3>
                       <div class="input-group mb-3">
                           <input v-model="newTask" type="text" class="form-control" placeholder="TO DO ..." >
@@ -127,7 +126,6 @@ const journalScreen = Vue.component('journal-screen', {
                           </div>
                       </div>
                   </div>
-
                   <ul class="list-group list-group-hover" v-for="(task, index) in tasks">
                       <li class="list-group-item d-flex justify-content-between">
                           <label class="checkbox-container">
@@ -140,16 +138,14 @@ const journalScreen = Vue.component('journal-screen', {
                   </ul>
               </div>
 
-              <div class="notes paper">
-                <div class="d-flex justify-content-between">
-                      <h3> NOTES </h3>
-                      <button class="trash-button" v-on:click="removeNotes"><i class="fa fa-trash"></i></button>
+              <div class="paper">
+                  <div class="header d-flex justify-content-between">
+                        <h3> NOTES </h3>
+                        <button class="trash-button" v-on:click="removeNotes"><i class="fa fa-trash"></i></button>
                   </div>
-                  <div class=notes-content> {{notes}} </div>
-                  <div>
-                      <textarea class="form-control" v-model="newNote" rows="1"></textarea>
-                      <button v-on:click="addNote" type="button" class="btn btn-info btn-block"> Add Note </button>
-                  </div>
+                  {{notes}}
+                  <textarea class="form-control" v-model="newNote" rows="1"></textarea>
+                  <button v-on:click="addNote" type="button" class="btn btn-info btn-block"> Add Note </button>
               </div>
 
               <div class="day-rater">
@@ -169,7 +165,7 @@ const journalScreen = Vue.component('journal-screen', {
               <div class="calendar-container">
                   <h3> CALENDAR </h3>
                   <table class="table week-calendar">
-                      <thead class="calendar-header">
+                      <thead class="header">
                         <th v-for="day in daysInWeek">{{day}}</th>
                       </thead>
                       <tbody>
@@ -229,14 +225,6 @@ const journalScreen = Vue.component('journal-screen', {
         this.inputDay = dayInWeek;
     },
     async getMyDayJournal(userData, inputDay) {
-        const response = await fetch('api/myday', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ user: this.userData , date: inputDay })
-        })
     }
   },
   beforeMount() {
@@ -292,8 +280,6 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 <button v-on:click="saveNewProject" class="btn btn-info btn-block"> Save </button>
               </div>
           </div>
-
-
 
           <div v-if="!(Object.keys(scrumBoards).length === 0)">
               <div v-for="board in scrumBoards">
@@ -374,7 +360,7 @@ const app = new Vue({
                 body: JSON.stringify({ username: username , password: password })
             })
             if (!response.ok) {
-              alert("Username and password do not match");
+              alert("Username and password do not match.");
             }
             else {
                 this.userData = await response.json();
@@ -388,9 +374,14 @@ const app = new Vue({
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: username , password: password })
+                body: JSON.stringify({username: username , password: password })
             })
-            this.userData = await response.json();
+            if (!response.ok) {
+              alert("Username already taken.");
+            }
+            else {
+              this.userData = await response.json();
+            }
       }
     }
 }).$mount('#app');

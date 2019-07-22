@@ -1,8 +1,5 @@
 package nl.sogyo.myjournal.domain;
 
-
-import java.util.Set;
-
 import javax.persistence.*;
 
 @Entity
@@ -18,9 +15,6 @@ public class User{
 	private String username;
 	private String password;
 	
-	@OneToMany(mappedBy="user", cascade = CascadeType.ALL)
-	private Set<MyJournalDay> dayjournal;
-
 	public User() {
 
 	}
@@ -42,19 +36,10 @@ public class User{
 		return this.userID;
 	}
 	
-	public static boolean legitUser(User loginUser, String inputPassword) {
-		if (loginUser == null || !loginUser.password.equals(inputPassword)) {
+	public static boolean legitUser(User user, String inputPassword) {
+		if (user == null || !user.password.equals(inputPassword)) {
 			return false;
 		}
 		return true;
 	}
-	
-	public Set<MyJournalDay> getDayJournal() {
-		return this.dayjournal;
-	}
-	
-	public void setDayJournal(Set<MyJournalDay> journal) {
-		this.dayjournal = journal;
-	}
-	
 }

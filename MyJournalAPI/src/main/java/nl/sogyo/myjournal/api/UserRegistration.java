@@ -28,6 +28,10 @@ public class UserRegistration {
 		String username = user.getUsername();
 		String password = user.getPassword();
 		User registerUser = UserConnector.register(username, password);
+		
+		if (registerUser == null) {
+			return Response.status(404).entity("").build();
+		}
 
 		String output = new JSONResultProcessor().createUserResponse(registerUser);
 		return Response.status(200).entity(output).build();
