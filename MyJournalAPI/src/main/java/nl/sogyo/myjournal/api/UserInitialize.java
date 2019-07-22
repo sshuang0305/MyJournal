@@ -28,8 +28,11 @@ import nl.sogyo.myjournal.persistance.UserConnector;
 			String username = user.getUsername();
 			String password = user.getPassword();
 			User loginUser = UserConnector.connect(username, password);
-			System.out.println("user: " + loginUser.getUsername() + " - " + loginUser.getPassword());
 			
+			if (loginUser == null) {
+				return Response.status(404).entity("").build();
+			}
+
 			String output = new JSONResultProcessor().createUserResponse(loginUser);
 			return Response.status(200).entity(output).build();
 	  }

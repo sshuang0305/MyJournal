@@ -1,33 +1,35 @@
 /**
- * The screen shown before the app starts, prompting for username.
+ * The screen shown before the app starts, prompting for username and password.
  */
 Vue.component('login-screen', {
     data() {
         return {
             username: undefined,
             password: undefined,
+            errorMessage: "",
             newUsername: undefined,
             newPassword: undefined,
-            errorMessage: "",
+            repeatPassword: undefined,
+            newErrorMessage: "",
         }
     },
     template: `
-        <div>
-            <div class="grid-container-login">
-                <div class="login-container">
-                    </br></br> <input placeholder="Username" v-model="username" />
-                    </br> <input type="password" placeholder="Password" v-model="password" />
-                    </br> <label class="form-check-label"><input type="checkbox"> Remember me</label>
-                    </br> {{ errorMessage }}
-                    </br> <button class="btn btn-info" v-on:click="confirmUser">Sign in</button>
-                </div>
-                <div class="register-container">
-                    <div>
-                      </br></br> <input placeholder="New username" v-model="newUsername" />
-                      </br> <input type="password" placeholder="Password" v-model="newPassword" />
-                      </br> <button class="btn btn-info" v-on:click="registerUser">Register</button>
-                    </div>
-                </div>
+        <div class="grid-container-login">
+            <div class="login-container">
+                    <h4> Login </h4>
+                    <div> <input placeholder="Username" v-model="username" /> </div>
+                    <div> <input type="password" placeholder="Password" v-model="password" /> </div>
+                    <div> <label class="form-check-label"><input type="checkbox"> Remember me</label> </div>
+                    <div> {{ errorMessage }} </div>
+                    <button class="btn btn-info btn-block" v-on:click="confirmUser">Sign in</button>
+            </div>
+            <div class="register-container">
+                      <h4> Register </h4>
+                      <div> <input placeholder="New username" v-model="newUsername" /> </div>
+                      <div> <input type="password" placeholder="Password" v-model="newPassword" /> </div>
+                      <div> <input type="password" placeholder="Repeat password" v-model="repeatPassword" /> </div>
+                      <div> {{ newErrorMessage }} </div>
+                      <button class="btn btn-info btn-block" v-on:click="registerUser">Register</button>
             </div>
         </div>
     `,
@@ -45,37 +47,52 @@ Vue.component('login-screen', {
             this.$emit('user-confirmed', this.username, this.password);
         },
         registerUser() {
+            if (!this.newUsername) {
+                this.newErrorMessage = "Username is required";
+                return;
+            }
+            if (!this.newPassword) {
+                this.newErrorMessage = "Password is required";
+                return;
+            }
+            if (this.newPassword != this.repeatPassword) {
+                this.newErrorMessage = "Passwords do not match";
+                return;
+            }
             this.$emit('user-registration-confirmed', this.newUsername, this.newPassword);
         }
     }
 });
 
+/**
+ * Navigation bar with links to the journal or scrumboard.
+ */
 const navigationScreen = Vue.component('navigation-screen', {
     props: ['userData'],
     template: `
         <div>
-          <nav class="navbar navbar-expand-sm navbar-lighr bg-light flex-nowrap">
-              <span class="navbar-text w-100">Signed in as: {{userData.username}}</span>
-              <div class="navbar-collapse collapse w-100 justify-content-center">
-                  <ul class="navbar-nav mx-auto">
-                      <li class="nav-item">
-                          <router-link to="/journal">Journal</router-link>
-                      </li>
-                      <li class="nav-item">
-                          <router-link to="/scrumboard">Scrumboard</router-link>
-                      </li>
-                      <li class="nav-item">
-                          <router-link to="/planningpoker">Planningpoker</router-link>
-                      </li>
-                  </ul>
-              </div>
-              <div class="w-100"><!--spacer--></div>
-          </nav>
-          <router-view v-bind:user-data="userData"> </router-view>
+            <nav class="navbar navbar-expand-sm navbar-lighr bg-light flex-nowrap">
+                <span class="navbar-text w-100">Signed in as: {{userData.username}}</span>
+                <div class="navbar-collapse collapse w-100 justify-content-center">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <router-link to="/journal">Journal</router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link to="/scrumboard">Scrumboard</router-link>
+                        </li>
+                    </ul>
+                </div>
+                <div class="w-100"><!--spacer--></div>
+            </nav>
+            <router-view v-bind:user-data="userData"> </router-view>
         </div>
     `,
 });
 
+/**
+ * Journal page with a to-do-list, notes, dayrating, and a calendar.
+ */
 const journalScreen = Vue.component('journal-screen', {
   props: ['userData'],
   data: function() {
@@ -92,7 +109,6 @@ const journalScreen = Vue.component('journal-screen', {
   },
   template: `
       <div>
-          <h1> {{userData}} </h1>
           <div class="header">
               <h1> JOURNAL </h1>
               Today: {{ currentDate }}
@@ -228,6 +244,9 @@ const journalScreen = Vue.component('journal-screen', {
   },
 });
 
+/**
+ * Scrumboard page with your projects.
+ */
 const scrumBoard = Vue.component('scumboard-screen', {
   data: function() {
     return {
@@ -323,39 +342,9 @@ const scrumBoard = Vue.component('scumboard-screen', {
   },
 });
 
-const planningPoker = Vue.component('planningpoker-screen', {
-  data: function () {
-    return {
-      startingGameForm: undefined,
-    }
-  },
-  template: `
-      <div>
-          <div class="header">
-              <h1> PLANNING POKER </h1>
-          </div>
-          <button v-on:click="startGame" class="btn btn-info">Start Game</button>
-          <div v-if="startingGameForm">
-              <form>
-                  <div class="form-group">
-                      <label for="projectName">Players</label>
-                      <input class="form-control" placeholder="Enter the number of players ...">
-                  </div>
-              </form>
-          </div>
-      </div>
-  `,
-  methods: {
-    startGame() {
-      this.startingGameForm = "";
-    }
-  },
-});
-
 const routes = [
   {path: '/journal', component: journalScreen},
   {path: '/scrumboard', component: scrumBoard},
-  {path: '/planningpoker', component: planningPoker}
 ]
 
 const router = new VueRouter({
@@ -384,9 +373,11 @@ const app = new Vue({
                 },
                 body: JSON.stringify({ username: username , password: password })
             })
-            this.userData = await response.json();
-            if (!this.userData) {
-                alert("Username and password do not match");
+            if (!response.ok) {
+              alert("Username and password do not match");
+            }
+            else {
+                this.userData = await response.json();
             }
         },
         async registerUser(username, password) {

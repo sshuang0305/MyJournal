@@ -5,23 +5,13 @@
   margin-bottom: 0px;
 }
 
-nav .navbar-nav li a{
-  color: black;
-  padding: 30px;
-}
-
-.header {
-  padding: 30px;
-  text-align: center;
-}
-
 .grid-container-login {
+  padding: 30px;
   display: grid;
   grid-template-areas:
   'up'
   'down';
   grid-gap: 50px 50px;
-  align-items: center;
 }
 
 .login-container {
@@ -33,6 +23,18 @@ nav .navbar-nav li a{
   grid-area: down;
   justify-self: center;
 }
+
+nav .navbar-nav li a{
+  color: black;
+  padding: 30px;
+}
+
+.header {
+  padding: 30px;
+  text-align: center;
+}
+
+
 .grid-container {
   display: grid;
   grid-template-areas:

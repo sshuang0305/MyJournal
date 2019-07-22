@@ -28,8 +28,7 @@ public class UserRegistration {
 		String username = user.getUsername();
 		String password = user.getPassword();
 		User registerUser = UserConnector.register(username, password);
-		System.out.println("user: " + registerUser.getUsername() + " - " + registerUser.getPassword());
-		
+
 		String output = new JSONResultProcessor().createUserResponse(registerUser);
 		return Response.status(200).entity(output).build();
   }

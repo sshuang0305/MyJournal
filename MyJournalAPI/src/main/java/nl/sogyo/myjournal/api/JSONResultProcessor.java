@@ -12,6 +12,7 @@ public class JSONResultProcessor {
 
         result.put("username", user.getUsername());
         result.put("password", user.getPassword());
+
 		return result.toJSONString();
 	}
 	
