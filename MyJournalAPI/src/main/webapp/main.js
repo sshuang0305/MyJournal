@@ -97,11 +97,12 @@ const journalScreen = Vue.component('journal-screen', {
   props: ['userData'],
   data: function() {
     return {
-      notes: "",
+      myDay: undefined,
+      notes: undefined,
       newNote: "",
-      tasks: [],
+      tasks: undefined,
       newTask: "",
-      dayRating: 50,
+      dayRating: undefined,
       monthsInYear: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       daysInWeek: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       inputDay: undefined,
@@ -110,8 +111,9 @@ const journalScreen = Vue.component('journal-screen', {
   template: `
       <div>
           <div class="header">
+              {{myDay}}
               <h1> JOURNAL </h1>
-              Today: {{ currentDate }}
+              Today: {{ inputDay }}
           </div>
 
           <div class="grid-container-journal">
@@ -180,16 +182,7 @@ const journalScreen = Vue.component('journal-screen', {
       </div>
   `,
   computed: {
-    currentDate() {
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2, '0');
-      const mm = this.monthsInYear[parseInt(String(today.getMonth() + 1).padStart(2, '0')) - 1];
-      const yyyy = today.getFullYear();
 
-      const todaysDate = dd + ' ' + mm + ' ' + yyyy;
-      this.inputDay = todaysDate;
-      return todaysDate;
-    },
     daysInCurrentWeek() {
         let week = [];
         let current = new Date;
@@ -203,13 +196,18 @@ const journalScreen = Vue.component('journal-screen', {
         return week;
     },
   },
-  created() {
-    this.currentDate;
-  },
   methods: {
-    addNote() {
-        this.notes += this.newNote + ' ';
+    async addNote() {
+        this.notes += this.newNote + " ";
         this.newNote = "";
+        const response = await fetch('api/notes', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({userID: this.userData.userID , date: this.inputDay, notes: this.notes})
+        })
     },
     removeNotes() {
         this.notes = "";
@@ -224,11 +222,31 @@ const journalScreen = Vue.component('journal-screen', {
     clickedOnDay(dayInWeek) {
         this.inputDay = dayInWeek;
     },
-    async getMyDayJournal(userData, inputDay) {
+    async getMyDayJournal(userID) {
+
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = this.monthsInYear[parseInt(String(today.getMonth() + 1).padStart(2, '0')) - 1];
+      const yyyy = today.getFullYear();
+      const todaysDate = dd + ' ' + mm + ' ' + yyyy;
+      this.inputDay = todaysDate;
+
+      const response = await fetch('api/myday', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({userID: userID , date: todaysDate })
+      })
+      this.myDay = await response.json();
+      this.notes = this.myDay.notes;
+      this.dayRating = this.myDay.dayRating;
+      this.tasks = this.myDay.toDoList;
     }
   },
   beforeMount() {
-    this.getMyDayJournal();
+    this.getMyDayJournal(this.userData.userID, this.inputDay);
   },
 });
 
