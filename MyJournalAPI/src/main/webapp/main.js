@@ -318,11 +318,13 @@ const scrumBoard = Vue.component('scumboard-screen', {
       scrumBoards: [],
       newBoardForm: undefined,
       projectName: "",
-      userStories: [],
       userStory: "",
       addedStories: "",
-
       boardStatus: ["BACKLOG", "TO-DO", "IN PROGRESS", "DONE"],
+      backlog: [],
+      todo: [],
+      inprogress: [],
+      done: [],
     }
   },
   template: `
@@ -387,18 +389,18 @@ const scrumBoard = Vue.component('scumboard-screen', {
     },
     saveNewProject() {
         let boardObj = {};
-        boardObj[this.projectName] = this.userStories
+        boardObj[this.projectName] = this.backlog
         this.scrumBoards.push(boardObj);
         this.projectName = "";
 
         this.newBoardForm = undefined;
-        this.userStories = [];
+        this.backlog = [];
         this.addedStories = "";
         boardObj = {};
 
     },
     addStory() {
-      this.userStories.push(this.userStory);
+      this.backlog.push(this.userStory);
       this.addedStories += this.userStory + ". ";
       this.userStory = "";
     },

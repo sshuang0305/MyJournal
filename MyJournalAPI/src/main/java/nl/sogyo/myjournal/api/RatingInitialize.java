@@ -28,7 +28,7 @@ public class RatingInitialize {
 			String date = day.getDate();
 			int dayRating = day.getDayRating();
 	
-			Day selectedDay = DayConnector.saveRating(userID, date, dayRating);
+			Day selectedDay = new DayConnector(userID, date).saveRating(dayRating);
 			String output = new JSONResultProcessor().createDayResponse(selectedDay);
 			return Response.status(200).entity(output).build();
 	  }

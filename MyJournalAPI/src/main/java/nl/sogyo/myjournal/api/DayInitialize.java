@@ -27,7 +27,7 @@ public class DayInitialize {
 	
 			int userID = Integer.parseInt(day.getUserID());
 			String date = day.getDate();
-			Day selectedDay = DayConnector.connect(userID, date);
+			Day selectedDay = new DayConnector(userID, date).connect();
 			String output = new JSONResultProcessor().createDayResponse(selectedDay);
 			return Response.status(200).entity(output).build();
 	  }

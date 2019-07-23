@@ -12,130 +12,66 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import nl.sogyo.myjournal.domain.Day;
 
 public class DayConnector {
-
-	public static Day connect(int userID, String date) {
-		
-	    Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    SessionFactory sf = config.buildSessionFactory(reg);
-	    Session session = sf.openSession();
 	
-	    Transaction tx = session.beginTransaction();
+	private final int userID;
+	private final String date;
+	private Day selectedDay;
+    private final Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
+    private final ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+    private final SessionFactory sf = config.buildSessionFactory(reg);
+    private final Session session = sf.openSession();
+    private final Transaction tx = session.beginTransaction();
+    private final Criteria criteria = session.createCriteria(Day.class);
 	
-	    Criteria criteria = session.createCriteria(Day.class);
-	    Day selectedDay = (Day) criteria
+	public DayConnector(int theUserID, String theDate) {
+		this.userID = theUserID;
+		this.date = theDate;
+	    this.selectedDay = (Day) this.criteria
 		    .add(Restrictions.eq("date", date))
 		    .add(Restrictions.eq("userID", userID)).uniqueResult();
-	    
-	    if (selectedDay == null) {
-	    	selectedDay = new Day(date, userID);
-	    	session.save(selectedDay);
+	}
+
+	public Day connect() {
+	    if (this.selectedDay == null) {
+	    	this.selectedDay = new Day(date, userID);
+	    	this.session.save(this.selectedDay);
 	    }
-
 	    tx.commit();
-	    return selectedDay;
+	    return this.selectedDay;
 	}
 	
-	public static Day addNotes(int userID, String date, String notes) {
-		
-	    Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    SessionFactory sf = config.buildSessionFactory(reg);
-	    Session session = sf.openSession();
-	
-	    Transaction tx = session.beginTransaction();
-	
-	    Criteria criteria = session.createCriteria(Day.class);
-	    Day selectedDay = (Day) criteria
-		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", userID)).uniqueResult();
-
-	    selectedDay.setNotes(notes);
-	    session.save(selectedDay);
-
-	    tx.commit();
-	    return selectedDay;
+	public Day addNotes(String notes) {
+	    this.selectedDay.setNotes(notes);
+	    this.session.save(this.selectedDay);
+	    this.tx.commit();
+	    return this.selectedDay;
 	}
 	
-	public static Day saveRating(int userID, String date, int dayRating) {
-		Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    SessionFactory sf = config.buildSessionFactory(reg);
-	    Session session = sf.openSession();
-	
-	    Transaction tx = session.beginTransaction();
-	
-	    Criteria criteria = session.createCriteria(Day.class);
-	    Day selectedDay = (Day) criteria
-		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", userID)).uniqueResult();
-
-	    selectedDay.setDayRating(dayRating);
-	    session.save(selectedDay);
-
-	    tx.commit();
-	    return selectedDay;
+	public Day saveRating(int dayRating) {
+	    this.selectedDay.setDayRating(dayRating);
+	    this.session.save(this.selectedDay);
+	    this.tx.commit();
+	    return this.selectedDay;
 	}
 	
-	public static Day addTask(int userID, String date, String task) {
-		Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    SessionFactory sf = config.buildSessionFactory(reg);
-	    Session session = sf.openSession();
-	
-	    Transaction tx = session.beginTransaction();
-	
-	    Criteria criteria = session.createCriteria(Day.class);
-	    Day selectedDay = (Day) criteria
-		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", userID)).uniqueResult();
-
-	    selectedDay.addNewTask(task);
-	    session.save(selectedDay);
-
-	    tx.commit();
-	    return selectedDay;
+	public Day addTask(String task) {
+	    this.selectedDay.addNewTask(task);
+	    this.session.save(this.selectedDay);
+	    this.tx.commit();
+	    return this.selectedDay;
 	}
 	
-	public static Day deleteNotes(int userID, String date, String notes) {
-		
-	    Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    SessionFactory sf = config.buildSessionFactory(reg);
-	    Session session = sf.openSession();
-	
-	    Transaction tx = session.beginTransaction();
-	
-	    Criteria criteria = session.createCriteria(Day.class);
-	    Day selectedDay = (Day) criteria
-		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", userID)).uniqueResult();
-
-	    selectedDay.setNotes("");
-	    session.save(selectedDay);
-
-	    tx.commit();
-	    return selectedDay;
+	public Day deleteNotes(String notes) {
+	    this.selectedDay.setNotes("");
+	    this.session.save(this.selectedDay);
+	    this.tx.commit();
+	    return this.selectedDay;
 	}
 	
-	public static Day deleteTask(int userID, String date, String task) {
-		
-	    Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    SessionFactory sf = config.buildSessionFactory(reg);
-	    Session session = sf.openSession();
-	
-	    Transaction tx = session.beginTransaction();
-	
-	    Criteria criteria = session.createCriteria(Day.class);
-	    Day selectedDay = (Day) criteria
-		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", userID)).uniqueResult();
-
-	    selectedDay.deleteTask(task);
-	    session.save(selectedDay);
-
-	    tx.commit();
+	public Day deleteTask(String task) {
+	    this.selectedDay.deleteTask(task);
+	    this.session.save(this.selectedDay);
+	    this.tx.commit();
 	    return selectedDay;
 	}
 }

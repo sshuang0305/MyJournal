@@ -24,7 +24,7 @@ public class Day {
 	private int userID;
 	
 	public Day() {
-		
+
 	}
 	
 	public Day(String dateSelected, int user) {

@@ -27,7 +27,7 @@ public class TasksInitialize {
 			int userID = Integer.parseInt(day.getUserID());
 			String date = day.getDate();
 			String task = day.getTask();
-			Day selectedDay = DayConnector.addTask(userID, date, task);
+			Day selectedDay = new DayConnector(userID, date).addTask(task);
 			String output = new JSONResultProcessor().createDayResponse(selectedDay);
 			return Response.status(200).entity(output).build();
 	  }

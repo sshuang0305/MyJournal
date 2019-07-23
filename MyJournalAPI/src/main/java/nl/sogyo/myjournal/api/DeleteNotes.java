@@ -28,7 +28,7 @@ public class DeleteNotes {
 			String date = day.getDate();
 			String notes = day.getNotes();
 
-			Day selectedDay = DayConnector.deleteNotes(userID, date, notes);
+			Day selectedDay = new DayConnector(userID, date).deleteNotes(notes);
 			String output = new JSONResultProcessor().createDayResponse(selectedDay);
 			return Response.status(200).entity(output).build();
 	}

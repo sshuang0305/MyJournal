@@ -28,7 +28,7 @@ public class DeleteTask {
 			String date = day.getDate();
 			String task = day.getTask();
 
-			Day selectedDay = DayConnector.deleteTask(userID, date, task);
+			Day selectedDay = new DayConnector(userID, date).deleteTask(task);
 			String output = new JSONResultProcessor().createDayResponse(selectedDay);
 			return Response.status(200).entity(output).build();
 	}
