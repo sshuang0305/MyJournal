@@ -2,7 +2,7 @@ package nl.sogyo.myjournal.api;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -12,23 +12,24 @@ import javax.ws.rs.core.Response;
 import nl.sogyo.myjournal.domain.Day;
 import nl.sogyo.myjournal.persistance.DayConnector;
 
-
-@Path("myday")
-public class DayInitialize {
+@Path("deletetask")
+public class DeleteTask {
 	  /**
 	    * @param request
 	    * @return
 	    */
-	    @POST
+	    @PUT
 	    @Consumes(MediaType.APPLICATION_JSON)
 	    @Produces(MediaType.APPLICATION_JSON)
-	    public Response initialize(
-	        @Context HttpServletRequest request, Daydata day) {
-	
+	public Response delete(
+			@Context HttpServletRequest request, Daydata day) {
+
 			int userID = Integer.parseInt(day.getUserID());
 			String date = day.getDate();
-			Day selectedDay = DayConnector.connect(userID, date);
+			String task = day.getTask();
+
+			Day selectedDay = DayConnector.deleteTask(userID, date, task);
 			String output = new JSONResultProcessor().createDayResponse(selectedDay);
 			return Response.status(200).entity(output).build();
-	  }
+	}
 }

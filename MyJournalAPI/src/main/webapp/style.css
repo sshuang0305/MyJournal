@@ -198,6 +198,11 @@ ul.list-group.list-group-hover li:hover{
   text-align: center;
 }
 
+.round {
+  border-radius: 50%;
+  display: block;
+}
+
 table.week-calendar td:hover {
   background-color: #d1f0ff;
   cursor: pointer;

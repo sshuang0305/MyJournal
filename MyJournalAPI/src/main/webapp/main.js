@@ -98,22 +98,22 @@ const journalScreen = Vue.component('journal-screen', {
   data: function() {
     return {
       myDay: undefined,
-      notes: undefined,
+      notes: "",
       newNote: "",
-      tasks: undefined,
+      tasks: [],
       newTask: "",
       dayRating: undefined,
       monthsInYear: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       daysInWeek: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-      inputDay: undefined,
+      selectedDay: undefined,
+      selectedWeek: undefined,
     }
   },
   template: `
       <div>
           <div class="header">
-              {{myDay}}
               <h1> JOURNAL </h1>
-              Today: {{ inputDay }}
+              Date selected: {{ selectedDay }}
           </div>
 
           <div class="grid-container-journal">
@@ -135,7 +135,7 @@ const journalScreen = Vue.component('journal-screen', {
                               <span class="checkmark"></span>
                           </label>
                           <span>{{task}}</span>
-                          <button class="trash-button" v-on:click="removeTask(index)"><i class="fa fa-trash"></i></button>
+                          <button class="trash-button" v-on:click="removeTask(task, index)"><i class="fa fa-trash"></i></button>
                       </li>
                   </ul>
               </div>
@@ -162,91 +162,150 @@ const journalScreen = Vue.component('journal-screen', {
                       <div class="icon p-2"><i class='far fa-smile'></i></div>
                       <div class="icon p-2"><i class='far fa-smile-beam'></i></div>
                   </div>
+                  <button v-on:click="saveRating" type="button" class="btn btn-info btn-lg"> Save </button>
               </div>
 
               <div class="calendar-container">
+                  <button v-on:click="previousWeek" type="button" class="btn btn-info round pull-left"> < </button>
+                  <button v-on:click="nextWeek" type="button" class="btn btn-info round pull-right"> > </button>
                   <h3> CALENDAR </h3>
                   <table class="table week-calendar">
                       <thead class="header">
-                        <th v-for="day in daysInWeek">{{day}}</th>
+                          <th v-for="day in daysInWeek">{{day}}</th>
                       </thead>
                       <tbody>
-                        <tr class="days-in-week">
-                          <td v-for="dayInWeek in daysInCurrentWeek" v-on:click="clickedOnDay(dayInWeek)"> {{dayInWeek}} </td>
+                          <tr class="days-in-week">
+                            <td v-for="dayInWeek in selectedWeek" v-on:click="clickedOnDay(dayInWeek)"> {{dayInWeek}} </td>
                         </tr>
                       </tbody>
                   </table>
-                  <p> Date selected: {{inputDay}} </p>
+                   <p> Date selected: {{selectedDay}} </p>
               </div>
           </div>
       </div>
   `,
-  computed: {
-
-    daysInCurrentWeek() {
-        let week = [];
-        let current = new Date;
-        for (let i = 1; i <= 7; i++) {
-          let firstDay = current.getDate()  - current.getDay() + i;
-          let dayInWeek = new Date(current.setDate(firstDay)).toISOString().slice(8,10);
-          let monthIndex = parseInt(new Date(current.setDate(firstDay)).toISOString().slice(6,8));
-          let year = new Date().getFullYear();
-          week.push(dayInWeek + " " + this.monthsInYear[monthIndex - 1] + " " + year);
-        }
-        return week;
-    },
-  },
   methods: {
-    async addNote() {
-        this.notes += this.newNote + " ";
-        this.newNote = "";
-        const response = await fetch('api/notes', {
+      async addNote() {
+          this.notes += this.newNote + " ";
+          const response = await fetch('api/notes', {
+              method: 'PUT',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, notes: this.notes})
+          })
+          this.newNote = "";
+      },
+      async removeNotes() {
+          this.notes = "";
+          const response = await fetch('api/deletenotes', {
+              method: 'PUT',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, notes: this.notes})
+          })
+          this.notes = this.myDay.notes;
+      },
+      async addTask() {
+          this.tasks.push(this.newTask);
+          const response = await fetch('api/tasks', {
+              method: 'PUT',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, task: this.newTask})
+          })
+          this.tasks = this.myDay.tasks;
+          this.newTask = "";
+      },
+      async removeTask(task, index) {
+          this.tasks.splice(index, 1);
+          const response = await fetch('api/deletetask', {
+              method: 'PUT',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, task: task})
+          })
+          this.tasks = this.myDay.tasks;
+      },
+      clickedOnDay(dayInWeek) {
+          this.selectedDay = dayInWeek;
+          this.getMyDayJournal();
+      },
+      async getMyDayJournal() {
+          const response = await fetch('api/myday', {
+              method: 'POST',
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay })
+          })
+          this.myDay = await response.json();
+          this.notes = this.myDay.notes;
+          this.dayRating = this.myDay.dayRating;
+          this.tasks = this.myDay.tasks;
+      },
+      async saveRating() {
+        const response = await fetch('api/rating', {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({userID: this.userData.userID , date: this.inputDay, notes: this.notes})
+            body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, dayRating: this.dayRating})
         })
-    },
-    removeNotes() {
-        this.notes = "";
-    },
-    addTask() {
-        this.tasks.push(this.newTask);
-        this.newTask = "";
-    },
-    removeTask(index) {
-        this.tasks.splice(index,1);
-    },
-    clickedOnDay(dayInWeek) {
-        this.inputDay = dayInWeek;
-    },
-    async getMyDayJournal(userID) {
-
-      const today = new Date();
-      const dd = String(today.getDate()).padStart(2, '0');
-      const mm = this.monthsInYear[parseInt(String(today.getMonth() + 1).padStart(2, '0')) - 1];
-      const yyyy = today.getFullYear();
-      const todaysDate = dd + ' ' + mm + ' ' + yyyy;
-      this.inputDay = todaysDate;
-
-      const response = await fetch('api/myday', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({userID: userID , date: todaysDate })
-      })
-      this.myDay = await response.json();
-      this.notes = this.myDay.notes;
-      this.dayRating = this.myDay.dayRating;
-      this.tasks = this.myDay.toDoList;
-    }
+      },
+      previousWeek() {
+          const today = new Date();
+          today.setDate(today.getDate() - 7);
+          let week = [];
+          for (let i = 1; i <= 7; i++) {
+              let firstDay = today.getDate()  - today.getDay() + i;
+              let dayInWeek = new Date(today.setDate(firstDay)).toISOString().slice(8,10);
+              let monthIndex = parseInt(new Date(today.setDate(firstDay)).toISOString().slice(6,8));
+              let year = new Date().getFullYear();
+              week.push(dayInWeek + " " + this.monthsInYear[monthIndex - 1] + " " + year);
+          }
+          this.selectedWeek = week;
+      },
+      nextWeek() {
+        const today = new Date();
+        today.setDate(today.getDate());
+        let week = [];
+        for (let i = 1; i <= 7; i++) {
+            let firstDay = today.getDate()  - today.getDay() + i;
+            let dayInWeek = new Date(today.setDate(firstDay)).toISOString().slice(8,10);
+            let monthIndex = parseInt(new Date(today.setDate(firstDay)).toISOString().slice(6,8));
+            let year = new Date().getFullYear();
+            week.push(dayInWeek + " " + this.monthsInYear[monthIndex - 1] + " " + year);
+        }
+        this.selectedWeek = week;
+      }
   },
   beforeMount() {
-    this.getMyDayJournal(this.userData.userID, this.inputDay);
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = this.monthsInYear[parseInt(String(today.getMonth() + 1).padStart(2, '0')) - 1];
+    const yyyy = today.getFullYear();
+    const todaysDate = dd + ' ' + mm + ' ' + yyyy;
+    this.selectedDay = todaysDate;
+    this.getMyDayJournal();
+    let week = [];
+    for (let i = 1; i <= 7; i++) {
+        let firstDay = today.getDate()  - today.getDay() + i;
+        let dayInWeek = new Date(today.setDate(firstDay)).toISOString().slice(8,10);
+        let monthIndex = parseInt(new Date(today.setDate(firstDay)).toISOString().slice(6,8));
+        let year = new Date().getFullYear();
+        week.push(dayInWeek + " " + this.monthsInYear[monthIndex - 1] + " " + year);
+    }
+    this.selectedWeek = week;
   },
 });
 

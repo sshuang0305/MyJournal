@@ -1,6 +1,5 @@
 package nl.sogyo.myjournal.domain;
 
-import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +18,7 @@ public class Day {
 	private int dayID;
 	
 	private String date;
-	private ArrayList<String> toDoList;
+	private String toDoList;
 	private String notes;
 	private int dayRating;
 	private int userID;
@@ -28,11 +27,11 @@ public class Day {
 		
 	}
 	
-	public Day(String dateSelected, ArrayList<String> tasks, String newNotes, int rating, int user) {
+	public Day(String dateSelected, int user) {
 		this.date = dateSelected;
-		this.toDoList = tasks;
-		this.notes = newNotes;
-		this.dayRating = rating;
+		this.toDoList = "";
+		this.notes = "";
+		this.dayRating = 50;
 		this.userID = user;
 	}
 	
@@ -60,7 +59,19 @@ public class Day {
 		return this.dayRating;
 	}
 	
-	public ArrayList<String> getToDoList() {
+	public void setDayRating(int rating) {
+		this.dayRating = rating;
+	}
+	
+	public String getToDoList() {
 		return this.toDoList;
+	}
+	
+	public void addNewTask(String newTask) {
+		this.toDoList += newTask + ";";
+	}
+	
+	public void deleteTask(String Task) {
+		this.toDoList = this.toDoList.replace(Task + ";", "");
 	}
 }
