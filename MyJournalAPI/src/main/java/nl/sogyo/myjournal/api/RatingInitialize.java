@@ -22,7 +22,7 @@ public class RatingInitialize {
 	    @Consumes(MediaType.APPLICATION_JSON)
 	    @Produces(MediaType.APPLICATION_JSON)
 	    public Response initialize(
-	        @Context HttpServletRequest request, Daydata day) {
+	        @Context HttpServletRequest request, DayData day) {
 	
 			int userID = Integer.parseInt(day.getUserID());
 			String date = day.getDate();

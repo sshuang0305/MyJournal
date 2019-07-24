@@ -38,6 +38,30 @@ public class JSONResultProcessor {
 		
 		return result.toJSONString();
 	}
+	
+	public String createScrumboardResponse(Scrumboard scrumboard) {
+	
+		JSONArray jsnArray = new JSONArray();
+		String[] backlog = scrumboard.getBacklog().split(";");
+		for (String story : backlog) {
+			if (!story.equals("")) {
+				jsnArray.add(story);
+			}
+		}
+		
+		JSONObject result = new JSONObject();
+		result.put("scrumboardID", scrumboard.getScrumboardID());
+		result.put("projectname", scrumboard.getProjectName());
+		result.put("userID", scrumboard.getUserID());
+		result.put("backlog", jsnArray);
+		return result.toJSONString();
+	}
+	
+	public String[] createListFromString(String jsonString) {
+		jsonString = jsonString.substring(1, jsonString.length() - 1 );
+		String[] list = jsonString.split(",");
+		return list;
+	}
 }
 
 

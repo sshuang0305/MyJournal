@@ -22,7 +22,7 @@ public class DeleteTask {
 	    @Consumes(MediaType.APPLICATION_JSON)
 	    @Produces(MediaType.APPLICATION_JSON)
 	public Response delete(
-			@Context HttpServletRequest request, Daydata day) {
+			@Context HttpServletRequest request, DayData day) {
 
 			int userID = Integer.parseInt(day.getUserID());
 			String date = day.getDate();
