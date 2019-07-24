@@ -317,15 +317,21 @@ const scrumBoard = Vue.component('scumboard-screen', {
     return {
       scrumBoards: [],
       newBoardForm: undefined,
-      projectName: "",
       userStory: "",
       addedStories: "",
-      boardStatus: ["BACKLOG", "TO-DO", "IN PROGRESS", "DONE"],
-      backlog: [],
-      todo: [],
-      inprogress: [],
-      done: [],
+      boardColumns: ["BACKLOG", "TO-DO", "IN PROGRESS", "DONE"],
+      scrumboard: {projectName: "", backlog: [], todo: [], inprogress: [], done: []},
     }
+  },
+  computed: {
+      board: {
+        get () {
+          return this.scrumboard;
+        },
+        set (newBoard) {
+          this.scrumboard = newBoard;
+        }
+      },
   },
   template: `
       <div>
@@ -337,7 +343,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
               <form>
                   <div class="form-group">
                       <label for="projectName">Projectname</label>
-                      <input v-model="projectName" class="form-control" placeholder="Enter your new project name ...">
+                      <input v-model="board.projectName" class="form-control" placeholder="Enter your new project name ...">
                   </div>
 
                   <div class="form-group">
@@ -349,9 +355,8 @@ const scrumBoard = Vue.component('scumboard-screen', {
                           </div>
                       </div>
                   </div>
-
                   <div>
-                    Added Stories: {{addedStories}}
+                      Added Stories: {{addedStories}}
                   </div>
 
               </form>
@@ -362,19 +367,46 @@ const scrumBoard = Vue.component('scumboard-screen', {
 
           <div v-if="!(Object.keys(scrumBoards).length === 0)">
               <div v-for="board in scrumBoards">
-                  <h3> PROJECT: {{Object.keys(board)[0]}} </h3>
+                  <h3> PROJECT: {{board.projectName}} </h3>
+                  {{board}}
                   <table class="table scrumboard">
                       <thead>
-                        <th v-for="status in boardStatus">{{status}}</th>
+                        <th v-for="boardColumn in boardColumns">{{boardColumn}}</th>
                       </thead>
                       <tbody>
                           <tr>
                               <td>
-                                <div v-for="postIt in board[Object.keys(board)[0]]" class=post-it> {{postIt}} </div>
+                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in board.backlog">
+                                      <li v-on:click="moveToToDo(postIt, index)" class="list-group-item d-flex justify-content-between post-it">
+                                          {{postIt}}
+                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                      </li>
+                                  </ul>
                               </td>
-                              <td> </td>
-                              <td> </td>
-                              <td> </td>
+                              <td>
+                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in board.todo">
+                                      <li class="list-group-item d-flex justify-content-between post-it">
+                                          {{postIt}}
+                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                      </li>
+                                  </ul>
+                              </td>
+                              <td>
+                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in board.inprogress">
+                                      <li class="list-group-item d-flex justify-content-between post-it">
+                                          {{postIt}}
+                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                      </li>
+                                  </ul>
+                              </td>
+                              <td>
+                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in board.done">
+                                      <li class="list-group-item d-flex justify-content-between post-it">
+                                          {{postIt}}
+                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                      </li>
+                                  </ul>
+                              </td>
                           </tr>
                       </tbody>
                   </table>
@@ -388,22 +420,21 @@ const scrumBoard = Vue.component('scumboard-screen', {
         this.newBoardForm = [];
     },
     saveNewProject() {
-        let boardObj = {};
-        boardObj[this.projectName] = this.backlog
-        this.scrumBoards.push(boardObj);
-        this.projectName = "";
-
+        this.scrumBoards.push(this.board);
         this.newBoardForm = undefined;
-        this.backlog = [];
         this.addedStories = "";
-        boardObj = {};
+        this.board = {projectName: "", backlog: [], todo: [], inprogress: [], done: []}
 
     },
     addStory() {
-      this.backlog.push(this.userStory);
+      this.scrumboard.backlog.push(this.userStory);
       this.addedStories += this.userStory + ". ";
       this.userStory = "";
     },
+    moveToToDo(postIt, index) {
+      this.scrumboard.todo.push(postIt);
+      this.board.backlog.splice(index, 1);
+    }
   },
 });
 

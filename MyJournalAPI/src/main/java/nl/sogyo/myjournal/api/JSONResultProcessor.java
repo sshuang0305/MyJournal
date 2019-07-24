@@ -27,7 +27,6 @@ public class JSONResultProcessor {
 				jsnTasks.add(task);
 			}
 		}
-		System.out.println(jsnTasks);
 
 		JSONObject result = new JSONObject();
 		result.put("dayID", day.getDayID());

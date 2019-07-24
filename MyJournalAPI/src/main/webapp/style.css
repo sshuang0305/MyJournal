@@ -120,7 +120,7 @@ ul.list-group.list-group-hover li:hover{
 }
 
 .trash-button {
-  background-color: white;
+  background-color: inherit;
   border: none;
   color: #7e8182;
   font-size: 16px;
