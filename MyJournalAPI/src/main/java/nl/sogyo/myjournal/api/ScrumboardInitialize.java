@@ -28,13 +28,9 @@ public class ScrumboardInitialize {
 	
 			int userID = Integer.parseInt(scrumboardData.getUserID());
 			String projectName = scrumboardData.getProjectName();
-			String userStories = scrumboardData.getStories();
-			String[] userStoriesList = new JSONResultProcessor().createListFromString(userStories);
-
-			Scrumboard newScrumboard = ScrumboardConnector.save(projectName, userID, userStoriesList);
+			String[] userStories = scrumboardData.getStories();
+			Scrumboard newScrumboard = ScrumboardConnector.save(projectName, userID, userStories);
 			String output = new JSONResultProcessor().createScrumboardResponse(newScrumboard);
-			
 			return Response.status(200).entity(output).build();
 	  }
-
 }

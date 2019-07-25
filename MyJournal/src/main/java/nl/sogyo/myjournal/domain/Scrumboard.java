@@ -23,14 +23,14 @@ public class Scrumboard {
 	private String inprogress = "";
 	private String done = "";
 	
+	public Scrumboard() {
+
+	}
+	
 	public Scrumboard(String name, int user, String[] userStories) {
 		this.projectName = name;
 		this.userID = user;
-		
-		for (String story : userStories) {
-			System.out.println(story);
-			this.backlog += story + ";";
-		}
+		this.backlog = String.join(";", userStories);
 	}
 	
 	public int getScrumboardID() {
@@ -49,16 +49,31 @@ public class Scrumboard {
 		return this.backlog;
 	}
 	
+	public void setBacklog(String[] newBacklog) {
+		this.backlog = String.join(";", newBacklog);
+	}
+	
 	public String getTodo() {
 		return this.todo;
+	}
+	
+	public void setTodo(String[] newTodo) {
+		this.todo = String.join(";", newTodo);
 	}
 	
 	public String getInProgress() {
 		return this.inprogress;
 	}
 	
+	public void setInProgress(String[] newInProgress) {
+		this.inprogress = String.join(";", newInProgress);
+	}
+	
 	public String getDone() {
 		return this.done;
 	}
 
+	public void setDone(String[] newDone) {
+		this.done = String.join(";", newDone);
+	}
 }

@@ -358,50 +358,56 @@ const scrumBoard = Vue.component('scumboard-screen', {
 
           <div v-if="!(Object.keys(scrumBoards).length === 0)">
               <div v-for="scrumBoard in scrumBoards">
-                  <h3> PROJECT: {{scrumBoard.projectName}} </h3>
-                  {{scrumBoard}}
-                  <table class="table scrumboard">
-                      <thead>
-                        <th v-for="boardColumn in boardColumns">{{boardColumn}}</th>
-                      </thead>
-                      <tbody>
-                          <tr>
-                              <td>
-                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.backlog">
-                                      <li v-on:click="moveToToDo(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
-                                          {{postIt}}
-                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
-                                      </li>
-                                  </ul>
-                              </td>
-                              <td>
-                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.todo">
-                                      <li v-on:click="moveToInProgress(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
-                                          {{postIt}}
-                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
-                                      </li>
-                                  </ul>
-                              </td>
-                              <td>
-                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.inprogress">
-                                      <li v-on:click="moveToDone(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
-                                          {{postIt}}
-                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
-                                      </li>
-                                  </ul>
-                              </td>
-                              <td>
-                                  <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.done">
-                                      <li v-on:click="moveToBacklog(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
-                                          {{postIt}}
-                                          <button class="trash-button"><i class="fa fa-trash"></i></button>
-                                      </li>
-                                  </ul>
-                              </td>
-                          </tr>
-                      </tbody>
-                  </table>
-                  <button class="btn btn-info btn-block"> Save Changes In Project </button>
+                  <div class="scrumboard">
+                      <h3> PROJECT: {{scrumBoard.projectName}} </h3>
+                      <form class="form-inline">
+                          <div class="form-group">
+                              <input class="form-control" placeholder="Username">
+                              <button @click="addMemberToProject(scrumBoard)" class="btn btn-info">Add member</button>
+                          </div>
+                      </form>
+                      <table class="table">
+                          <thead>
+                            <th v-for="boardColumn in boardColumns">{{boardColumn}}</th>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>
+                                      <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.backlog">
+                                          <li v-on:click="moveToToDo(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
+                                              {{postIt}}
+                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                          </li>
+                                      </ul>
+                                  </td>
+                                  <td>
+                                      <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.todo">
+                                          <li v-on:click="moveToInProgress(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
+                                              {{postIt}}
+                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                          </li>
+                                      </ul>
+                                  </td>
+                                  <td>
+                                      <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.inprogress">
+                                          <li v-on:click="moveToDone(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
+                                              {{postIt}}
+                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
+                                          </li>
+                                      </ul>
+                                  </td>
+                                  <td>
+                                      <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.done">
+                                          <li v-on:click="moveToBacklog(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
+                                              {{postIt}}
+                                          </li>
+                                      </ul>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      <button v-on:click="saveChangesProject(scrumBoard)" class="btn btn-info btn-block"> Save Changes In Project </button>
+                    </div>
                 </div>
           </div>
       </div>
@@ -414,7 +420,6 @@ const scrumBoard = Vue.component('scumboard-screen', {
     async saveNewProject() {
         this.newBoardForm = undefined;
         this.addedStories = "";
-        hoi = JSON.stringify(this.board.backlog);
 
         const response = await fetch('api/savescrumboard', {
             method: 'POST',
@@ -422,12 +427,21 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({userID: this.userData.userID , projectName: this.board.projectName, stories: hoi})
+            body: JSON.stringify({userID: this.userData.userID , projectName: this.board.projectName, stories: this.board.backlog})
         })
-        // hoi = await response.json();
-        // console.log(hoi);
-        this.scrumBoards.push(this.board);
+        let scrumboardObj = await response.json();
+        let scrumboard = {scrumboardID: scrumboardObj.scrumboardID, projectName: scrumboardObj.projectName, backlog: scrumboardObj.backlog, todo: scrumboardObj.todo, inprogress: scrumboardObj.inprogress, done: scrumboardObj.done, userID: scrumboardObj.userID};
+
+        const response2 = await fetch('api/saveuserandboardlinker', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({userID: scrumboard.userID , scrumboardID: scrumboard.scrumboardID})
+        })
         this.board = {projectName: "", backlog: [], todo: [], inprogress: [], done: []};
+        this.getMyScrumboards();
     },
     addStory() {
       this.board.backlog.push(this.userStory);
@@ -449,8 +463,37 @@ const scrumBoard = Vue.component('scumboard-screen', {
     moveToBacklog(scrumBoard, postIt, index) {
       scrumBoard.backlog.push(postIt);
       scrumBoard.done.splice(index, 1);
-    }
+    },
+    async getMyScrumboards() {
+        const response = await fetch('api/myscrumboards', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({userID: this.userData.userID})
+        });
+        let boards = await response.json();
+        this.scrumBoards = boards.scrumboards;
+      },
+      async saveChangesProject(scrumBoard) {
+        const response = await fetch('api/savechangesproject', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({scrumboardID: scrumBoard.scrumboardID, backlog: scrumBoard.backlog, todo: scrumBoard.todo, inprogress: scrumBoard.inprogress, done: scrumBoard.done})
+        })
+        this.getMyScrumboards();
+      },
+      addMemberToProject(scrumBoard) {
+        alert("Member added to project: " + scrumBoard.projectName);
+      }
   },
+  beforeMount() {
+    this.getMyScrumboards();
+  }
 });
 
 const routes = [

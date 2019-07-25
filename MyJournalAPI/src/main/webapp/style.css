@@ -208,6 +208,13 @@ table.week-calendar td:hover {
   cursor: pointer;
 }
 
+.scrumboard {
+  padding: 50px;
+  border-style: solid;
+  border-width: thin;
+  border-color: lightgrey;
+}
+
 .new-scrumboard-form {
   padding: 50px;
   border-style: solid;
@@ -231,4 +238,8 @@ table.week-calendar td:hover {
   border-style: solid;
   border-width: thin;
   border-color: #7e8182;
+}
+
+.invitemembersform {
+  margin-top: 10px;
 }
