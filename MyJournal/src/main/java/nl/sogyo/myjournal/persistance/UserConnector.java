@@ -35,6 +35,25 @@ public class UserConnector {
 	    return null;
 	}
 	
+	public static User connect(String username) {
+		
+	    Configuration config = new Configuration().configure().addAnnotatedClass(User.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+	
+	    Transaction tx = session.beginTransaction();
+	
+	    Criteria criteria = session.createCriteria(User.class);
+	    
+	    User loginUser = (User) criteria
+	              .add(Restrictions.eq("username", username))
+	              .uniqueResult();
+	    tx.commit();
+
+	    return loginUser;
+	}
+	
 	public static User register(String username, String password) {
 		
 	    Configuration config = new Configuration().configure().addAnnotatedClass(User.class);

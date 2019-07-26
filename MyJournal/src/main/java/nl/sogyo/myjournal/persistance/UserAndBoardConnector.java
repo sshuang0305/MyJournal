@@ -69,5 +69,43 @@ public class UserAndBoardConnector {
 	    
 	    return scrumboards;
 	}
+	
+	public static void delete(int userID, int scrumboardID) {
+		
+		System.out.println("doe ik dit");
+
+	    Configuration config = new Configuration().configure().addAnnotatedClass(UserAndBoardLinker.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+
+	    Transaction tx = session.beginTransaction();
+	    Criteria cr = session.createCriteria(UserAndBoardLinker.class);
+	    cr.add(Restrictions.eq("scrumboardID", scrumboardID));
+	    cr.add(Restrictions.eq("userID", userID));
+	    UserAndBoardLinker link = (UserAndBoardLinker) cr.uniqueResult();
+	    session.delete(link);
+		tx.commit();
+
+	}
+	
+	public static void delete(int scrumboardID) {
+
+	    Configuration config = new Configuration().configure().addAnnotatedClass(UserAndBoardLinker.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+
+	    Transaction tx = session.beginTransaction();
+	    Criteria cr = session.createCriteria(UserAndBoardLinker.class);
+	    cr.add(Restrictions.eq("scrumboardID", scrumboardID));
+
+	    List<UserAndBoardLinker> links = cr.list();
+	    for (UserAndBoardLinker link : links) {
+	    	session.delete(link);
+	    }
+		tx.commit();
+
+	}
 
 }

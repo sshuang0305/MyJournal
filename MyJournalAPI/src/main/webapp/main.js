@@ -322,6 +322,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
       userStory: "",
       addedStories: "",
       boardColumns: ["BACKLOG", "TO-DO", "IN PROGRESS", "DONE"],
+      newMember: "",
     }
   },
   template: `
@@ -359,13 +360,24 @@ const scrumBoard = Vue.component('scumboard-screen', {
           <div v-if="!(Object.keys(scrumBoards).length === 0)">
               <div v-for="scrumBoard in scrumBoards">
                   <div class="scrumboard">
-                      <h3> PROJECT: {{scrumBoard.projectName}} </h3>
-                      <form class="form-inline">
-                          <div class="form-group">
-                              <input class="form-control" placeholder="Username">
-                              <button @click="addMemberToProject(scrumBoard)" class="btn btn-info">Add member</button>
+                      <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+                          <h3 class="navbar-brand"> PROJECT: {{scrumBoard.projectName}} </h3>
+                          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                              <span class="navbar-toggler-icon"></span>
+                          </button>
+                          <div class="collapse navbar-collapse">
+                              <ul class="navbar-nav mr-auto">
+                                  <li class="nav-item">
+                                      <button @click="deleteProject(scrumBoard)" class="btn btn-light navbutton">Delete Project</button>
+                                  </li>
+                              </ul>
+                              <form class="form-inline my-2 my-lg-0">
+                                  <input v-model="newMember" class="form-control mr-sm-2" placeholder="Username">
+                                  <button @click="addMemberToProject(scrumBoard)" class="btn btn-light my-2 my-sm-0"> Add member </button>
+                              </form>
                           </div>
-                      </form>
+                      </nav>
+
                       <table class="table">
                           <thead>
                             <th v-for="boardColumn in boardColumns">{{boardColumn}}</th>
@@ -373,6 +385,10 @@ const scrumBoard = Vue.component('scumboard-screen', {
                           <tbody>
                               <tr>
                                   <td>
+                                      <li class="list-group-item d-flex justify-content-between post-it">
+                                          <textarea> </textarea>
+                                          <button class="trash-button"><i class="fa fa-plus"></i></button>
+                                      </li>
                                       <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.backlog">
                                           <li v-on:click="moveToToDo(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
                                               {{postIt}}
@@ -400,6 +416,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
                                       <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.done">
                                           <li v-on:click="moveToBacklog(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
                                               {{postIt}}
+                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
                                           </li>
                                       </ul>
                                   </td>
@@ -448,6 +465,9 @@ const scrumBoard = Vue.component('scumboard-screen', {
       this.addedStories += this.userStory + ". ";
       this.userStory = "";
     },
+    addNewStory() {
+
+    },
     moveToToDo(scrumBoard, postIt, index) {
       scrumBoard.todo.push(postIt);
       scrumBoard.backlog.splice(index, 1);
@@ -487,8 +507,38 @@ const scrumBoard = Vue.component('scumboard-screen', {
         })
         this.getMyScrumboards();
       },
-      addMemberToProject(scrumBoard) {
-        alert("Member added to project: " + scrumBoard.projectName);
+      async addMemberToProject(scrumBoard) {
+        const response = await fetch('api/addnewmember', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username: this.newMember, scrumboardID: scrumBoard.scrumboardID})
+        })
+        if (!response.ok) {
+          alert("User does not exists");
+        }
+        else {
+          alert(this.newMember + " added to: " + scrumBoard.projectName);
+        }
+        this.newMember = "";
+      },
+      async deleteProject(scrumBoard) {
+          const response = await fetch('api/deleteprojectforeveryone', {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({userID: this.userData.userID, scrumboardID: scrumBoard.scrumboardID})
+          })
+          if (!response.ok) {
+            alert(scrumBoard.projectName + " is removed from your space.");
+          }
+          else {
+            alert(scrumBoard.projectName + " is removed from you and your team members space");
+          }
+          this.getMyScrumboards();
       }
   },
   beforeMount() {

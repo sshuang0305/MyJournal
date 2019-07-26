@@ -49,5 +49,23 @@ public class ScrumboardConnector {
 	    session.update(scrumboard);
 	    tx.commit();
 	}
+	
+	public static Scrumboard delete (int userID, int scrumboardID) {
+	    Configuration config = new Configuration().configure().addAnnotatedClass(Scrumboard.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+
+	    Transaction tx = session.beginTransaction();
+	    Criteria cr = session.createCriteria(Scrumboard.class);
+	    cr.add(Restrictions.eq("scrumboardID", scrumboardID));
+	    cr.add(Restrictions.eq("userID", userID));
+	    Scrumboard scrumboard = (Scrumboard) cr.uniqueResult();
+	
+	    session.delete(scrumboard);
+		tx.commit();
+		return scrumboard;
+	
+	}
 }
 
