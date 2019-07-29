@@ -13,20 +13,16 @@ import nl.sogyo.myjournal.domain.User;
 
 public class UserConnector {
 
-	public static User connect(String username, String password) {
+	public static User login(String username, String password) {
 		
 	    Configuration config = new Configuration().configure().addAnnotatedClass(User.class);
 	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
 	    SessionFactory sf = config.buildSessionFactory(reg);
 	    Session session = sf.openSession();
-	
 	    Transaction tx = session.beginTransaction();
-	
 	    Criteria criteria = session.createCriteria(User.class);
 	    
-	    User loginUser = (User) criteria
-	              .add(Restrictions.eq("username", username))
-	              .uniqueResult();
+	    User loginUser = (User) criteria.add(Restrictions.eq("username", username)).uniqueResult();
 	    tx.commit();
 
 	    if (User.legitUser(loginUser, password)) {
@@ -60,17 +56,13 @@ public class UserConnector {
 	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
 	    SessionFactory sf = config.buildSessionFactory(reg);
 	    Session session = sf.openSession();
-	
 	    Transaction tx = session.beginTransaction();
-	    
 	    Criteria criteria = session.createCriteria(User.class);
 	    
-	    User existingUser = (User) criteria
-	              .add(Restrictions.eq("username", username))
-	              .uniqueResult();
+	    User existingUser = (User) criteria.add(Restrictions.eq("username", username)).uniqueResult();
 
 	    if (existingUser == null) {
-		    User newUser= new User(username, password);
+	    	User newUser= new User(username, password);
 		    session.save(newUser);
 		    tx.commit();
 		    return newUser;

@@ -1,6 +1,7 @@
 package nl.sogyo.myjournal.api;
 
 import javax.servlet.http.HttpServletRequest;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -12,9 +13,8 @@ import javax.ws.rs.core.Response;
 import nl.sogyo.myjournal.domain.User;
 import nl.sogyo.myjournal.persistance.UserConnector;
 
-
-@Path("users/register")
-public class UserRegistration {
+@Path("users/login")
+public class UserLogin {
 
     /**
     * @param request
@@ -23,17 +23,16 @@ public class UserRegistration {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response register(@Context HttpServletRequest request, UserData user) {
+    public Response login(@Context HttpServletRequest request, UserData user) {
 
-		String username = user.getUsername();
+    	String username = user.getUsername();
 		String password = user.getPassword();
-		User registerUser = UserConnector.register(username, password);
+		User loginUser = UserConnector.login(username, password);
 		
-		if (registerUser == null) {
+		if (loginUser == null) {
 			return Response.status(404).entity("").build();
 		}
-		String output = new JSONResultProcessor().createUserResponse(registerUser);
+		String output = new JSONResultProcessor().createUserResponse(loginUser);
 		return Response.status(200).entity(output).build();
     }
 }
-

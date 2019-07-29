@@ -11,9 +11,8 @@
         <script src="https://unpkg.com/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
+        <link rel='stylesheet' href='https://use.fontawesome.com/releases/v5.7.0/css/all.css' integrity='sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ' crossorigin='anonymous'>
         <link rel="stylesheet" type="text/css" href="style.css">
-
     </head>
 
     <body>
@@ -27,20 +26,18 @@
          </div>
 
         <div id="app">
+            <start-screen
+                v-if="!userLoggedIn"
+                v-on:user-logged-in="logInUser"
+                v-on:user-registered="registerUser">
+            </start-screen>
 
-            <login-screen
-                v-if="!userConfirmed"
-                v-on:user-confirmed="loggingIn"
-                v-on:user-registration-confirmed="registerUser">
-            </login-screen>
-
-            <navigation-screen
+            <navigation-bar
                 v-else
                 v-bind:user-data="userData">
-
-              </navigation-screen>
+            </navigation-bar>
         </div>
-        <script src="main.js"></script>
 
+        <script src="main.js"></script>
     </body>
 </html>

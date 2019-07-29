@@ -1,6 +1,6 @@
 package nl.sogyo.myjournal.api;
 
-public class DayData {
+public class JournalDayData {
 
 	private String userID;
 	private String date;
@@ -8,7 +8,7 @@ public class DayData {
 	private int dayRating;
 	private String task;
 
-	public DayData() {
+	public JournalDayData() {
 
 	}
 

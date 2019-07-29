@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import nl.sogyo.myjournal.persistance.ScrumboardConnector;
 
 
-@Path("savechangesproject")
+@Path("scrumboard/savechanges")
 public class ScrumboardUpdate {
 		  /**
 		    * @param request

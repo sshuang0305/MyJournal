@@ -14,22 +14,21 @@ import javax.ws.rs.core.Response;
 import nl.sogyo.myjournal.persistance.UserAndBoardConnector;
 import nl.sogyo.myjournal.domain.Scrumboard;
 
-@Path("myscrumboards")
-public class MyScrumboardsInitialize {
-	  /**
+@Path("scrumboard/myscrumboards")
+public class ScrumboardBoardsGetter {
+	/**
 	* @param request
 	* @return
 	*/
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response initialize(
-	    @Context HttpServletRequest request, UserAndBoardData userAndBoardData) {
+	public Response initialize(@Context HttpServletRequest request, UserAndBoardData userAndBoardData) {
 	
 		int userID = Integer.parseInt(userAndBoardData.getUserID());
 		
 		ArrayList<Scrumboard> scrumboards = UserAndBoardConnector.getBoards(userID);
 		String output = new JSONResultProcessor().createScrumboardsResponse(scrumboards);
 		return Response.status(200).entity(output).build();
-	  }
+	 }
 }

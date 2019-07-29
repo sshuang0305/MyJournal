@@ -5,23 +5,10 @@
   margin-bottom: 0px;
 }
 
-.grid-container-login {
+.startscreen-container {
+  display: block;
+  margin: auto;
   padding: 30px;
-  display: grid;
-  grid-template-areas:
-  'up'
-  'down';
-  grid-gap: 50px 50px;
-}
-
-.login-container {
-  grid-area: up;
-  justify-self: center;
-}
-
-.register-container {
-  grid-area: down;
-  justify-self: center;
 }
 
 nav .navbar-nav li a{
@@ -36,7 +23,6 @@ nav .navbar-nav li a{
   font-weight: bold;
 }
 
-
 .grid-container-journal {
   display: grid;
   grid-template-areas:
@@ -45,9 +31,10 @@ nav .navbar-nav li a{
   'down down';
   grid-gap: 50px 50px;
   grid-template-columns: 1fr 1fr;
+  font-weight: normal;
 }
 
-.paper {
+.notes {
     grid-area: right;
     word-wrap: break-word;
     overflow: hidden;
@@ -63,10 +50,14 @@ nav .navbar-nav li a{
     -ms-background-size: 100% 30px;
     background-size: 100% 30px;
 }
-.paper::before {content:""; z-index:-1; margin:0 1px; width:706px; height:10px; position:absolute; bottom:-3px; left:0; background:white; border:1px solid #B5B5B5;}
-.paper::after {content:''; position:absolute; width:0px; top:0; left:39px; bottom:0; border-left:1px solid #F8D3D3;}
+.notes::before {content:""; z-index:-1; margin:0 1px; width:706px; height:10px; position:absolute; bottom:-3px; left:0; background:white; border:1px solid #B5B5B5;}
+.notes::after {content:''; position:absolute; width:0px; top:0; left:39px; bottom:0; border-left:1px solid #F8D3D3;}
 
 .task-list {
+  padding: 30px;
+  text-align: center;
+  color: #7e8182;
+  font-weight: bold;
   grid-area: left;
   background-color: #d1f0ff;
   word-wrap: break-word;
@@ -78,45 +69,6 @@ nav .navbar-nav li a{
 
 ul.list-group.list-group-hover li:hover{
     filter: brightness(90%);
-}
-
-.checkbox-container input {
-  display: none;
-}
-
-.checkmark {
-  position: absolute;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-}
-
-.checkbox-container:hover input ~ .checkmark {
-  background-color: #ccc;
-  cursor: pointer;
-}
-
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-.checkbox-container input:checked ~ .checkmark:after {
-  display: block;
-  border-color: #06c4c1;
-}
-
-.checkbox-container .checkmark:after {
-  left: 8px;
-  top: 2px;
-  width: 8px;
-  height: 20px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
 }
 
 .trash-button {
@@ -142,15 +94,11 @@ ul.list-group.list-group-hover li:hover{
   border-color: grey;
 }
 
-.slidecontainer {
+.slider {
   width: 60%;
   margin:0 auto;
-}
-
-.slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 100%;
   height: 25px;
   background: lightgrey;
   outline: none;
@@ -219,10 +167,6 @@ table.week-calendar td:hover {
   padding: 50px;
   border-style: solid;
   border-width: thin;
-}
-
-.save-button {
-  padding-top: 50px;
 }
 
 .post-it {

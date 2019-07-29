@@ -13,7 +13,7 @@ import nl.sogyo.myjournal.persistance.UserAndBoardConnector;
 
 
 
-@Path("saveuserandboardlinker")
+@Path("userandboardlinker/save")
 public class UserAndBoardLinkerInitialize {
 	  /**
 	    * @param request

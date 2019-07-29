@@ -14,7 +14,7 @@ import org.json.simple.JSONArray;
 import nl.sogyo.myjournal.domain.Scrumboard;
 import nl.sogyo.myjournal.persistance.ScrumboardConnector;
 
-@Path("savescrumboard")
+@Path("scrumboard/save")
 public class ScrumboardInitialize {
 	  /**
 	    * @param request

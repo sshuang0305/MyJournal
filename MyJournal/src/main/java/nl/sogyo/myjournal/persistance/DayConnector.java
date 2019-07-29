@@ -31,7 +31,7 @@ public class DayConnector {
 		    .add(Restrictions.eq("userID", userID)).uniqueResult();
 	}
 
-	public Day connect() {
+	public Day getDay() {
 	    if (this.selectedDay == null) {
 	    	this.selectedDay = new Day(date, userID);
 	    	this.session.save(this.selectedDay);
@@ -42,6 +42,13 @@ public class DayConnector {
 	
 	public Day addNotes(String notes) {
 	    this.selectedDay.setNotes(notes);
+	    this.session.save(this.selectedDay);
+	    this.tx.commit();
+	    return this.selectedDay;
+	}
+	
+	public Day deleteNotes() {
+	    this.selectedDay.setNotes("");
 	    this.session.save(this.selectedDay);
 	    this.tx.commit();
 	    return this.selectedDay;
@@ -61,12 +68,7 @@ public class DayConnector {
 	    return this.selectedDay;
 	}
 	
-	public Day deleteNotes(String notes) {
-	    this.selectedDay.setNotes("");
-	    this.session.save(this.selectedDay);
-	    this.tx.commit();
-	    return this.selectedDay;
-	}
+
 	
 	public Day deleteTask(String task) {
 	    this.selectedDay.deleteTask(task);
