@@ -385,14 +385,9 @@ const scrumBoard = Vue.component('scumboard-screen', {
                           <tbody>
                               <tr>
                                   <td>
-                                      <li class="list-group-item d-flex justify-content-between post-it">
-                                          <textarea> </textarea>
-                                          <button class="trash-button"><i class="fa fa-plus"></i></button>
-                                      </li>
                                       <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.backlog">
                                           <li v-on:click="moveToToDo(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
                                               {{postIt}}
-                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
                                           </li>
                                       </ul>
                                   </td>
@@ -400,7 +395,6 @@ const scrumBoard = Vue.component('scumboard-screen', {
                                       <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.todo">
                                           <li v-on:click="moveToInProgress(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
                                               {{postIt}}
-                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
                                           </li>
                                       </ul>
                                   </td>
@@ -408,7 +402,6 @@ const scrumBoard = Vue.component('scumboard-screen', {
                                       <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.inprogress">
                                           <li v-on:click="moveToDone(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
                                               {{postIt}}
-                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
                                           </li>
                                       </ul>
                                   </td>
@@ -416,7 +409,6 @@ const scrumBoard = Vue.component('scumboard-screen', {
                                       <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.done">
                                           <li v-on:click="moveToBacklog(scrumBoard, postIt, index)" class="list-group-item d-flex justify-content-between post-it">
                                               {{postIt}}
-                                              <button class="trash-button"><i class="fa fa-trash"></i></button>
                                           </li>
                                       </ul>
                                   </td>
@@ -446,17 +438,23 @@ const scrumBoard = Vue.component('scumboard-screen', {
             },
             body: JSON.stringify({userID: this.userData.userID , projectName: this.board.projectName, stories: this.board.backlog})
         })
-        let scrumboardObj = await response.json();
-        let scrumboard = {scrumboardID: scrumboardObj.scrumboardID, projectName: scrumboardObj.projectName, backlog: scrumboardObj.backlog, todo: scrumboardObj.todo, inprogress: scrumboardObj.inprogress, done: scrumboardObj.done, userID: scrumboardObj.userID};
 
-        const response2 = await fetch('api/saveuserandboardlinker', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({userID: scrumboard.userID , scrumboardID: scrumboard.scrumboardID})
-        })
+        if (!response.ok) {
+          alert("not valid project name");
+        }
+        else {
+            let scrumboardObj = await response.json();
+            let scrumboard = {scrumboardID: scrumboardObj.scrumboardID, projectName: scrumboardObj.projectName, backlog: scrumboardObj.backlog, todo: scrumboardObj.todo, inprogress: scrumboardObj.inprogress, done: scrumboardObj.done, userID: scrumboardObj.userID};
+
+            const response2 = await fetch('api/saveuserandboardlinker', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userID: scrumboard.userID , scrumboardID: scrumboard.scrumboardID})
+            })
+        }
         this.board = {projectName: "", backlog: [], todo: [], inprogress: [], done: []};
         this.getMyScrumboards();
     },

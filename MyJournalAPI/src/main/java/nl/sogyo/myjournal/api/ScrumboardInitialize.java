@@ -30,6 +30,10 @@ public class ScrumboardInitialize {
 			String projectName = scrumboardData.getProjectName();
 			String[] userStories = scrumboardData.getStories();
 			Scrumboard newScrumboard = ScrumboardConnector.save(projectName, userID, userStories);
+			
+			if (newScrumboard == null) {
+				return Response.status(404).entity("").build();
+			}
 			String output = new JSONResultProcessor().createScrumboardResponse(newScrumboard);
 			return Response.status(200).entity(output).build();
 	  }

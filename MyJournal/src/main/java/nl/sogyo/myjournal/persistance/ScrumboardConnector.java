@@ -23,10 +23,19 @@ public class ScrumboardConnector {
 
 	    Transaction tx = session.beginTransaction();
 	    
-		Scrumboard newScrumboard= new Scrumboard(projectName, userID, userStories);
-	    session.save(newScrumboard);
-	    tx.commit();
-	    return newScrumboard;
+	    Criteria cr = session.createCriteria(Scrumboard.class);
+	    cr.add(Restrictions.eq("projectName", projectName));
+	    Scrumboard scrumboard = (Scrumboard) cr.uniqueResult();
+	    
+	    if (scrumboard == null) {
+			Scrumboard newScrumboard= new Scrumboard(projectName, userID, userStories);
+		    session.save(newScrumboard);
+		    tx.commit();
+		    return newScrumboard;
+	    }
+	    else {
+	    	return null;
+	    }
 	}
 	
 	public static void update(String[] backlog, String[] todo, String[] inprogress, String[] done, int scrumboardID) {
