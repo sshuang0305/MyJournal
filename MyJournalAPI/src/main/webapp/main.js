@@ -104,6 +104,10 @@ const journalScreen = Vue.component('journal-screen', {
                   </div>
                   <ul class="list-group list-group-hover" v-for="(task, index) in tasks">
                       <li class="list-group-item d-flex justify-content-between">
+                          <label class="checkbox-container">
+                              <input type="checkbox">
+                              <span class="checkmark"></span>
+                          </label>
                           {{task}}
                           <button class="trash-button" @click="deleteTask(task, index)"><i class="fa fa-trash"></i></button>
                       </li>
@@ -242,9 +246,9 @@ const journalScreen = Vue.component('journal-screen', {
   },
   beforeMount() {
       const today = new Date();
-      this.weekFormatter(today)
-      const todaysDayInWeek = today.getDay();
-      this.selectedDay = this.selectedWeek[todaysDayInWeek];
+      this.weekFormatter(today);
+      const todaysDayInWeek = new Date().getDay();
+      this.selectedDay = this.selectedWeek[todaysDayInWeek - 1];
       this.getMyDayJournal();
   },
 });

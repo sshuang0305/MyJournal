@@ -16,25 +16,24 @@ import nl.sogyo.myjournal.persistance.ScrumboardConnector;
 
 @Path("scrumboard/save")
 public class ScrumboardInitialize {
-	  /**
-	    * @param request
-	    * @return
-	    */
-	    @POST
-	    @Consumes(MediaType.APPLICATION_JSON)
-	    @Produces(MediaType.APPLICATION_JSON)
-	    public Response initialize(
-	        @Context HttpServletRequest request, ScrumboardData scrumboardData) {
+	 /**
+	* @param request
+	* @return
+	*/
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response initialize(@Context HttpServletRequest request, ScrumboardData scrumboardData) {
 	
-			int userID = Integer.parseInt(scrumboardData.getUserID());
-			String projectName = scrumboardData.getProjectName();
-			String[] userStories = scrumboardData.getStories();
-			Scrumboard newScrumboard = ScrumboardConnector.save(projectName, userID, userStories);
-			
-			if (newScrumboard == null) {
-				return Response.status(404).entity("").build();
-			}
-			String output = new JSONResultProcessor().createScrumboardResponse(newScrumboard);
-			return Response.status(200).entity(output).build();
-	  }
+		int userID = Integer.parseInt(scrumboardData.getUserID());
+		String projectName = scrumboardData.getProjectName();
+		String[] userStories = scrumboardData.getStories();
+		Scrumboard newScrumboard = ScrumboardConnector.save(projectName, userID, userStories);
+		
+		if (newScrumboard == null) {
+			return Response.status(404).entity("").build();
+		}
+		String output = new JSONResultProcessor().createScrumboardResponse(newScrumboard);
+		return Response.status(200).entity(output).build();
+	}
 }
