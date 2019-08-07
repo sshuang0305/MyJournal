@@ -55,10 +55,12 @@ public class User{
 		day.setUser(this);
 	}
 	
-	public static boolean legitUser(User user, String inputPassword) {
+	public static boolean validateUser(User user, String inputPassword) {
 		if (user == null || !user.password.equals(inputPassword)) {
 			return false;
 		}
 		return true;
 	}
+
+	
 }

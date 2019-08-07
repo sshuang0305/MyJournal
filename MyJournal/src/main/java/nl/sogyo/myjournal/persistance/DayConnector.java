@@ -22,19 +22,17 @@ public class DayConnector {
     private final SessionFactory sf = config.buildSessionFactory(reg);
     private final Session session = sf.openSession();
     private final Transaction tx = session.beginTransaction();
-    private final Criteria criteria = session.createCriteria(Day.class);
+
 	
-	public DayConnector(User theUser, String theDate) {
-		this.user = theUser;
+	public DayConnector(int theUserID, String theDate) {
+	    Criteria criteria = session.createCriteria(User.class);
+		this.user = (User) criteria.add(Restrictions.eq("userID", theUserID)).uniqueResult();
 		this.date = theDate;
-	    this.selectedDay = (Day) this.criteria
-		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", user)).uniqueResult();
 	}
 
 	public Day getDay() {
 	    if (this.selectedDay == null) {
-	    	this.selectedDay = new Day(date, user);
+	    	this.selectedDay = new Day(this.date, this.user);
 	    	this.session.save(this.selectedDay);
 	    }
 	    tx.commit();
