@@ -209,6 +209,7 @@ const journalScreen = Vue.component('journal-screen', {
           this.getMyDayJournal();
       },
       async getMyDayJournal() {
+          console.log(this.userData);
           const response = await fetch('api/journal/myday', {
               method: 'POST',
               headers: {
@@ -249,7 +250,7 @@ const journalScreen = Vue.component('journal-screen', {
       this.weekFormatter(today);
       const todaysDayInWeek = new Date().getDay();
       this.selectedDay = this.selectedWeek[todaysDayInWeek - 1];
-      this.getMyDayJournal();
+      // this.getMyDayJournal();
   },
 });
 

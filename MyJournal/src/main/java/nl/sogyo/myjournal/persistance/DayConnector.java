@@ -10,10 +10,11 @@ import org.hibernate.service.ServiceRegistry;
 import org.hibernate.service.ServiceRegistryBuilder;
 
 import nl.sogyo.myjournal.domain.Day;
+import nl.sogyo.myjournal.domain.User;
 
 public class DayConnector {
 	
-	private final int userID;
+	private final User user;
 	private final String date;
 	private Day selectedDay;
     private final Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
@@ -23,17 +24,17 @@ public class DayConnector {
     private final Transaction tx = session.beginTransaction();
     private final Criteria criteria = session.createCriteria(Day.class);
 	
-	public DayConnector(int theUserID, String theDate) {
-		this.userID = theUserID;
+	public DayConnector(User theUser, String theDate) {
+		this.user = theUser;
 		this.date = theDate;
 	    this.selectedDay = (Day) this.criteria
 		    .add(Restrictions.eq("date", date))
-		    .add(Restrictions.eq("userID", userID)).uniqueResult();
+		    .add(Restrictions.eq("userID", user)).uniqueResult();
 	}
 
 	public Day getDay() {
 	    if (this.selectedDay == null) {
-	    	this.selectedDay = new Day(date, userID);
+	    	this.selectedDay = new Day(date, user);
 	    	this.session.save(this.selectedDay);
 	    }
 	    tx.commit();
@@ -67,9 +68,7 @@ public class DayConnector {
 	    this.tx.commit();
 	    return this.selectedDay;
 	}
-	
 
-	
 	public Day deleteTask(String task) {
 	    this.selectedDay.deleteTask(task);
 	    this.session.save(this.selectedDay);

@@ -1,12 +1,6 @@
 package nl.sogyo.myjournal.domain;
 
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "day")
@@ -21,20 +15,31 @@ public class Day {
 	private String toDoList;
 	private String notes;
 	private int dayRating;
-	private int userID;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "userID")
+	private User user;
+
 	public Day() {
 
 	}
 	
-	public Day(String dateSelected, int user) {
+	public Day(String dateSelected, User theUser) {
 		this.date = dateSelected;
 		this.toDoList = "";
 		this.notes = "";
 		this.dayRating = 50;
-		this.userID = user;
+		this.user = theUser;
 	}
 	
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public String getDate() {
 		return this.date;
 	}
@@ -45,10 +50,6 @@ public class Day {
 	
 	public void setNotes(String newNotes) {
 		this.notes = newNotes;
-	}
-	
-	public int getUserID() {
-		return this.userID;
 	}
 	
 	public int getDayID() {
