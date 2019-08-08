@@ -14,6 +14,7 @@
         <property name="javax.persistence.validation.mode">none</property>
         <mapping class="nl.sogyo.myjournal.domain.User"/>
         <mapping class="nl.sogyo.myjournal.domain.Day"/>
+        <mapping class="nl.sogyo.myjournal.domain.Task"/>
         
     </session-factory>
 </hibernate-configuration>

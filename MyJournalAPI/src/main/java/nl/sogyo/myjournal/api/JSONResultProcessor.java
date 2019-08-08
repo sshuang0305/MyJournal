@@ -11,7 +11,6 @@ import nl.sogyo.myjournal.domain.*;
 public class JSONResultProcessor {
 
 	public String createUserResponse(User user) {
-
 		JSONObject result = new JSONObject();
         result.put("username", user.getUsername());
 	    result.put("password", user.getPassword());
@@ -23,11 +22,10 @@ public class JSONResultProcessor {
 	
 		JSONObject result = new JSONObject();
 		result.put("dayID", day.getDayID());
-//		result.put("tasks", fromStringToJsonArray(day.getToDoList()));
+		result.put("tasks", "");
 		result.put("date", day.getDate());
 		result.put("notes",day.getNotes());
 		result.put("dayRating", day.getDayRating());
-//		result.put("userID",day.getUserID());
 		
 		return result.toJSONString();
 	}

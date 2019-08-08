@@ -17,60 +17,34 @@ public class DayConnector {
 	private final User user;
 	private final String date;
 	private Day selectedDay;
-    private final Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
-    private final ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-    private final SessionFactory sf = config.buildSessionFactory(reg);
-    private final Session session = sf.openSession();
-    private final Transaction tx = session.beginTransaction();
-
 	
 	public DayConnector(int theUserID, String theDate) {
+	    Configuration config = new Configuration().configure().addAnnotatedClass(User.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+	    Transaction tx = session.beginTransaction();
 	    Criteria criteria = session.createCriteria(User.class);
 		this.user = (User) criteria.add(Restrictions.eq("userID", theUserID)).uniqueResult();
 		this.date = theDate;
+		tx.commit();
 	}
 
-	public Day getDay() {
+	public Day getSelectedDay() {
+	    Configuration config = new Configuration().configure().addAnnotatedClass(Day.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+	    Transaction tx = session.beginTransaction();
+	    Criteria criteria = session.createCriteria(Day.class);
+		this.selectedDay = (Day) criteria.add(Restrictions.eq("user", this.user))
+										 .add(Restrictions.eq("date", this.date))
+										 .uniqueResult();
 	    if (this.selectedDay == null) {
 	    	this.selectedDay = new Day(this.date, this.user);
-	    	this.session.save(this.selectedDay);
+	    	session.save(this.selectedDay);
 	    }
 	    tx.commit();
 	    return this.selectedDay;
-	}
-	
-	public Day addNotes(String notes) {
-	    this.selectedDay.setNotes(notes);
-	    this.session.save(this.selectedDay);
-	    this.tx.commit();
-	    return this.selectedDay;
-	}
-	
-	public Day deleteNotes() {
-	    this.selectedDay.setNotes("");
-	    this.session.save(this.selectedDay);
-	    this.tx.commit();
-	    return this.selectedDay;
-	}
-	
-	public Day saveRating(int dayRating) {
-	    this.selectedDay.setDayRating(dayRating);
-	    this.session.save(this.selectedDay);
-	    this.tx.commit();
-	    return this.selectedDay;
-	}
-	
-	public Day addTask(String task) {
-	    this.selectedDay.addNewTask(task);
-	    this.session.save(this.selectedDay);
-	    this.tx.commit();
-	    return this.selectedDay;
-	}
-
-	public Day deleteTask(String task) {
-	    this.selectedDay.deleteTask(task);
-	    this.session.save(this.selectedDay);
-	    this.tx.commit();
-	    return selectedDay;
 	}
 }

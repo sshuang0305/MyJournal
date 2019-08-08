@@ -1,5 +1,8 @@
 package nl.sogyo.myjournal.domain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,13 +15,15 @@ public class Day {
 	private int dayID;
 	
 	private String date;
-	private String toDoList;
 	private String notes;
 	private int dayRating;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userID")
 	private User user;
+	
+	@OneToMany(mappedBy="day",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<Task> toDoList = new HashSet<Task>();
 
 	public Day() {
 
@@ -26,7 +31,6 @@ public class Day {
 	
 	public Day(String dateSelected, User theUser) {
 		this.date = dateSelected;
-		this.toDoList = "";
 		this.notes = "";
 		this.dayRating = 50;
 		this.user = theUser;
@@ -44,6 +48,19 @@ public class Day {
 		return this.date;
 	}
 	
+	public Set<Task> getToDoList() {
+		return toDoList;
+	}
+
+	public void setToDoList(Set<Task> toDoList) {
+		this.toDoList = toDoList;
+	}
+	
+	public void addTask(Task newTask) {
+		this.toDoList.add(newTask);
+		newTask.setDay(this);
+	}
+
 	public String getNotes() {
 		return this.notes;
 	}
@@ -64,15 +81,4 @@ public class Day {
 		this.dayRating = rating;
 	}
 	
-	public String getToDoList() {
-		return this.toDoList;
-	}
-	
-	public void addNewTask(String newTask) {
-		this.toDoList += newTask + ";";
-	}
-	
-	public void deleteTask(String Task) {
-		this.toDoList = this.toDoList.replace(Task + ";", "");
-	}
 }
