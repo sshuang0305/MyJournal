@@ -7,6 +7,8 @@ public class JournalDayData {
 	private String notes;
 	private int dayRating;
 	private String task;
+	private int dayID;
+	private int taskID;
 
 	public JournalDayData() {
 
@@ -30,5 +32,13 @@ public class JournalDayData {
 	
 	public String getTask() {
 		return this.task;
+	}
+
+	public int getDayID() {
+		return dayID;
+	}
+	
+	public int getTaskID() {
+		return taskID;
 	}
 }

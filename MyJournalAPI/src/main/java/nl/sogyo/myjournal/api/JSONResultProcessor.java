@@ -1,6 +1,7 @@
 package nl.sogyo.myjournal.api;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,12 +23,23 @@ public class JSONResultProcessor {
 	
 		JSONObject result = new JSONObject();
 		result.put("dayID", day.getDayID());
-		result.put("tasks", "");
+		result.put("tasks", tasksToJson(day.getToDoList()));
 		result.put("date", day.getDate());
 		result.put("notes",day.getNotes());
 		result.put("dayRating", day.getDayRating());
 		
 		return result.toJSONString();
+	}
+	
+	public JSONArray tasksToJson(Set<Task> tasks) {
+		JSONArray jsArray = new JSONArray();
+		for (Task task : tasks) {
+			JSONObject taskObj = new JSONObject();
+			taskObj.put("taskID", task.getTaskID());
+			taskObj.put("taskText", task.getTaskText());
+			jsArray.add(taskObj);
+		};
+		return jsArray;
 	}
 }
 

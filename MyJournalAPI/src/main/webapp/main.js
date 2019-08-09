@@ -108,7 +108,7 @@ const journalScreen = Vue.component('journal-screen', {
                               <input type="checkbox">
                               <span class="checkmark"></span>
                           </label>
-                          {{task}}
+                          {{task.taskText}}
                           <button class="trash-button" @click="deleteTask(task, index)"><i class="fa fa-trash"></i></button>
                       </li>
                   </ul>
@@ -158,9 +158,9 @@ const journalScreen = Vue.component('journal-screen', {
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, task: this.addedTask})
+              body: JSON.stringify({dayID: this.myDay.dayID, task: this.addedTask})
           })
-          this.tasks.push(this.addedTask);
+          this.tasks.push({"taskText": this.addedTask});
           this.addedTask = "";
       },
       async deleteTask(task, index) {
@@ -169,7 +169,7 @@ const journalScreen = Vue.component('journal-screen', {
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, task: task})
+              body: JSON.stringify({taskID: task.taskID})
           })
           this.tasks.splice(index, 1);
       },
@@ -181,7 +181,7 @@ const journalScreen = Vue.component('journal-screen', {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, notes: this.notes})
+              body: JSON.stringify({userID: this.userData.userID , dayID: this.myDay.dayID, notes: this.notes})
           })
           this.addedNotes = "";
       },
@@ -201,7 +201,7 @@ const journalScreen = Vue.component('journal-screen', {
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, dayRating: this.dayRating})
+              body: JSON.stringify({dayID: this.myDay.dayID, dayRating: this.dayRating})
           })
       },
       clickedOnDay(dayInWeek) {
@@ -218,6 +218,7 @@ const journalScreen = Vue.component('journal-screen', {
               body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay })
           })
           this.myDay = await response.json();
+          console.log(this.myDay);
           this.notes = this.myDay.notes;
           this.dayRating = this.myDay.dayRating;
           this.tasks = this.myDay.tasks;

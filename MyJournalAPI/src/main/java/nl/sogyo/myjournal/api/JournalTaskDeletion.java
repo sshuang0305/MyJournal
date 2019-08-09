@@ -11,19 +11,19 @@ import javax.ws.rs.core.Response;
 
 import nl.sogyo.myjournal.persistance.TaskConnector;
 
-@Path("journal/addtask")
-public class JournalTaskAddition {
+
+@Path("journal/deletetask")
+public class JournalTaskDeletion {
 	/**
-	* @param request
-	* @return
-	*/
+    * @param request
+    * @return
+    */
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTask(@Context HttpServletRequest request, JournalDayData day) {
-		int dayID = day.getDayID();
-		String task = day.getTask();
-		TaskConnector.addTask(dayID, task);
+	public Response delete(@Context HttpServletRequest request, JournalDayData day) {
+    	int taskID = day.getTaskID();
+    	TaskConnector.deleteTask(taskID);
 		return Response.status(200).entity("").build();
-    }
+	}
 }
