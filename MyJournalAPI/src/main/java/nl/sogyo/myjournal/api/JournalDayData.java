@@ -4,11 +4,12 @@ public class JournalDayData {
 
 	private int userID;
 	private String date;
-	private String notes;
+	private String note;
 	private int dayRating;
 	private String task;
 	private int dayID;
 	private int taskID;
+	private int noteID;
 
 	public JournalDayData() {
 
@@ -22,8 +23,8 @@ public class JournalDayData {
 		return this.date;
 	}
 	
-	public String getNotes() {
-		return this.notes;
+	public String getNote() {
+		return this.note;
 	}
 	
 	public int getDayRating() {
@@ -40,5 +41,9 @@ public class JournalDayData {
 	
 	public int getTaskID() {
 		return taskID;
+	}
+	
+	public int getNoteID() {
+		return noteID;
 	}
 }

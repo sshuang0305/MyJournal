@@ -15,15 +15,17 @@ public class Day {
 	private int dayID;
 	
 	private String date;
-	private String notes;
 	private int dayRating;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userID")
 	private User user;
 	
-	@OneToMany(mappedBy="day",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy="day", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Task> toDoList = new HashSet<Task>();
+	
+	@OneToMany(mappedBy="day", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<Note> notes = new HashSet<Note>();
 
 	public Day() {
 
@@ -31,7 +33,6 @@ public class Day {
 	
 	public Day(String dateSelected, User theUser) {
 		this.date = dateSelected;
-		this.notes = "";
 		this.dayRating = 50;
 		this.user = theUser;
 	}
@@ -49,7 +50,7 @@ public class Day {
 	}
 	
 	public Set<Task> getToDoList() {
-		return toDoList;
+		return this.toDoList;
 	}
 
 	public void setToDoList(Set<Task> toDoList) {
@@ -61,12 +62,17 @@ public class Day {
 		newTask.setDay(this);
 	}
 
-	public String getNotes() {
+	public Set<Note> getNotes() {
 		return this.notes;
 	}
 	
-	public void setNotes(String newNotes) {
-		this.notes = newNotes;
+	public void setNotes(Set<Note> notes) {
+		this.notes = notes;
+	}
+	
+	public void addNote(Note newNote) {
+		this.notes.add(newNote);
+		newNote.setDay(this);
 	}
 	
 	public int getDayID() {

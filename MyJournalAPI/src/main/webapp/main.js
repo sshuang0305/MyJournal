@@ -82,8 +82,8 @@ const journalScreen = Vue.component('journal-screen', {
       myDay: undefined,
       tasks: [],
       addedTask: "",
-      notes: "",
-      addedNotes: "",
+      notes: [],
+      addedNote: "",
       dayRating: undefined,
       daysInWeek: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       selectedDay: undefined,
@@ -115,12 +115,14 @@ const journalScreen = Vue.component('journal-screen', {
               </div>
 
               <div class="notes">
-                  <div class="header d-flex justify-content-between">
-                      <h3> NOTES </h3>
-                      <button class="trash-button" @click="deleteNotes"><i class="fa fa-trash"></i></button>
-                  </div>
-                  {{notes}}
-                  <textarea class="form-control" v-model="addedNotes" rows="3"></textarea>
+                  <h3 class="header"> NOTES </h3>
+                  <ul v-for="(note, index) in notes">
+                      <li class= "list-group-hover d-flex justify-content-between">
+                          {{note.noteText}}
+                          <button class="trash-button" @click="deleteNote(note, index)"><i class="fa fa-trash"></i></button>
+                       </li>
+                  </ul>
+                  <textarea class="form-control" v-model="addedNote" rows="3"></textarea>
                   <button @click="addNotes" type="button" class="btn btn-info btn-block"> Add Notes </button>
               </div>
 
@@ -174,26 +176,25 @@ const journalScreen = Vue.component('journal-screen', {
           this.tasks.splice(index, 1);
       },
       async addNotes() {
-          this.notes += this.addedNotes + " ";
           const response = await fetch('api/journal/addnotes', {
               method: 'PUT',
               headers: {
-                  'Accept': 'application/json',
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({userID: this.userData.userID , dayID: this.myDay.dayID, notes: this.notes})
+              body: JSON.stringify({dayID: this.myDay.dayID, note: this.addedNote})
           })
-          this.addedNotes = "";
+          this.notes.push({"noteText" : this.addedNote});
+          this.addedNote = "";
       },
-      async deleteNotes() {
-          const response = await fetch('api/journal/deletenotes', {
+      async deleteNote(note, index) {
+          const response = await fetch('api/journal/deletenote', {
               method: 'PUT',
               headers: {
                   'Content-Type': 'application/json'
               },
-              body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay, notes: this.notes})
+              body: JSON.stringify({dayID: this.myDay.dayID, noteID: note.noteID})
           })
-          this.notes = "";
+          this.notes.splice(index, 1);
       },
       async saveRating() {
           const response = await fetch('api/journal/saverating', {
@@ -218,7 +219,6 @@ const journalScreen = Vue.component('journal-screen', {
               body: JSON.stringify({userID: this.userData.userID , date: this.selectedDay })
           })
           this.myDay = await response.json();
-          console.log(this.myDay);
           this.notes = this.myDay.notes;
           this.dayRating = this.myDay.dayRating;
           this.tasks = this.myDay.tasks;

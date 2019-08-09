@@ -25,9 +25,8 @@ public class JSONResultProcessor {
 		result.put("dayID", day.getDayID());
 		result.put("tasks", tasksToJson(day.getToDoList()));
 		result.put("date", day.getDate());
-		result.put("notes",day.getNotes());
+		result.put("notes", notesToJson(day.getNotes()));
 		result.put("dayRating", day.getDayRating());
-		
 		return result.toJSONString();
 	}
 	
@@ -37,6 +36,17 @@ public class JSONResultProcessor {
 			JSONObject taskObj = new JSONObject();
 			taskObj.put("taskID", task.getTaskID());
 			taskObj.put("taskText", task.getTaskText());
+			jsArray.add(taskObj);
+		};
+		return jsArray;
+	}
+	
+	public JSONArray notesToJson(Set<Note> notes) {
+		JSONArray jsArray = new JSONArray();
+		for (Note note : notes) {
+			JSONObject taskObj = new JSONObject();
+			taskObj.put("noteID", note.getNoteID());
+			taskObj.put("noteText", note.getNoteText());
 			jsArray.add(taskObj);
 		};
 		return jsArray;

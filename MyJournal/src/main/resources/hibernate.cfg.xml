@@ -15,6 +15,7 @@
         <mapping class="nl.sogyo.myjournal.domain.User"/>
         <mapping class="nl.sogyo.myjournal.domain.Day"/>
         <mapping class="nl.sogyo.myjournal.domain.Task"/>
+        <mapping class="nl.sogyo.myjournal.domain.Note"/>
         
     </session-factory>
 </hibernate-configuration>
