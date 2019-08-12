@@ -51,5 +51,55 @@ public class JSONResultProcessor {
 		};
 		return jsArray;
 	}
+	
+	public String createScrumboardResponse(Scrumboard scrumboard) {
+
+		JSONObject result = new JSONObject();
+		result.put("scrumboardID", scrumboard.getScrumboardID());
+		result.put("projectName", scrumboard.getProjectName());
+		result.put("userstories", userStoriesToJson(scrumboard.getUserStories()));
+		return result.toJSONString();
+	}
+	
+	public JSONObject userStoriesToJson(Set<UserStory> stories) {
+		JSONObject result = new JSONObject();
+		JSONArray backlog = new JSONArray();
+		JSONArray todo = new JSONArray();
+		JSONArray inprogress = new JSONArray();
+		JSONArray done = new JSONArray();
+		for (UserStory story : stories) {
+			if (story.getState() == BoardState.BACKLOG) {
+				backlog.add(story.getStoryText());
+			}
+			else if (story.getState() == BoardState.TODO) {
+				todo.add(story.getStoryText());
+			}
+			else if (story.getState() == BoardState.INPROGRESS) {
+				inprogress.add(story.getStoryText());
+			}
+			else {
+				done.add(story.getStoryText());
+			}
+		}
+		result.put("backlog", backlog);
+		result.put("todo", todo);
+		result.put("inprogress", inprogress);
+		result.put("done", done);
+		return result;
+	}
+	
+	public String createScrumboardsResponse(ArrayList<Scrumboard> scrumboards) {
+		JSONObject result = new JSONObject();
+		JSONArray JSONscrumboards = new JSONArray();
+		
+		for (Scrumboard board : scrumboards) {
+			String scrumboard = createScrumboardResponse(board);
+			JSONscrumboards.add(scrumboard);
+		}
+		result.put("scrumboards", JSONscrumboards);
+		return result.toJSONString();
+	}
+
+
 }
 

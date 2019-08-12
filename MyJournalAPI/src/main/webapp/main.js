@@ -254,11 +254,187 @@ const journalScreen = Vue.component('journal-screen', {
   },
 });
 
+/**
+ * Scrumboard page with your projects.
+ */
+const scrumBoard = Vue.component('scumboard-screen', {
+    props: ['userData'],
+    data: function() {
+      return {
+        scrumBoards: [],
+        board: {projectName: "", stories: {backlog: [], todo: [], inprogress: [], done: []}},
+        newBoardForm: undefined,
+        userStory: "",
+        addedStories: "",
+        boardColumns: ["BACKLOG", "TO-DO", "IN PROGRESS", "DONE"],
+        newMember: "",
+      }
+    },
+    template: `
+        <div>
+            <div class="header">
+                <h1> SCRUMBOARD </h1>
+                <button @click="createBoard" class="btn btn-info">Create New Project</button>
+            </div>
+
+            <form v-if="newBoardForm" class="new-scrumboard-form">
+                <div class="form-group">
+                    <label for="projectName">Projectname</label>
+                    <input v-model="board.projectName" class="form-control" placeholder="Enter your new project name ...">
+                </div>
+                <div class="form-group">
+                    <label for="userstories"> Userstories </label>
+                    <div class="input-group mb-3">
+                        <input v-model="userStory" class="form-control" placeholder="Enter a userstory..."">
+                        <button @click="addStory" class="btn btn-info input-group-append"> Add </button>
+                    </div>
+                </div>
+                Added Stories: {{addedStories}}
+                <button @click="saveNewProject" class="btn btn-info btn-block"> Save </button>
+            </form>
+
+            <div v-for="scrumBoard in scrumBoards">
+                <div class="scrumboard">
+                    <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+                        <h3 class="navbar-brand"> PROJECT: {{scrumBoard.projectName}} </h3>
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item"> <button @click="deleteProject(scrumBoard)" class="btn btn-light navbutton">Delete Project</button> </li>
+                        </ul>
+                        <form class="form-inline my-2 my-lg-0">
+                            <input v-model="newMember" class="form-control mr-sm-2" placeholder="Username">
+                            <button @click="addMemberToProject(scrumBoard)" class="btn btn-light my-2 my-sm-0"> Add member </button>
+                        </form>
+                    </nav>
+
+                    <table class="table">
+                        <thead> <th v-for="boardColumn in boardColumns"> {{boardColumn}} </th> </thead>
+                        <tbody>
+                            <tr>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.backlog"> <li @click="moveToToDo(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.todo"> <li @click="moveToInProgress(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.inprogress"> <li @click="moveToDone(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.done"> <li @click="moveToBacklog(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button @click="saveChangesProject(scrumBoard)" class="btn btn-info btn-block"> Save Changes In Project </button>
+                </div>
+            </div>
+        </div>
+    `,
+    methods: {
+        createBoard() {
+            this.newBoardForm = [];
+        },
+        async saveNewProject() {
+            this.newBoardForm = undefined;
+            this.addedStories = "";
+            const response = await fetch('api/scrumboard/save', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userID: this.userData.userID, projectName: this.board.projectName, stories: this.board.stories.backlog})
+
+            })
+            if (!response.ok) {
+                alert("Project already exists. Please choose another projectname.");
+            }
+            else {
+                this.board = {projectName: "", stories: {backlog: [], todo: [], inprogress: [], done: []}};
+                this.getMyScrumboards();
+            }
+        },
+        addStory() {
+          this.board.stories.backlog.push(this.userStory);
+          this.addedStories += this.userStory + ". ";
+          this.userStory = "";
+        },
+        moveToToDo(scrumBoard, postIt, index) {
+          scrumBoard.todo.push(postIt);
+          scrumBoard.backlog.splice(index, 1);
+        },
+        moveToInProgress(scrumBoard, postIt, index) {
+          scrumBoard.inprogress.push(postIt);
+          scrumBoard.todo.splice(index, 1);
+        },
+        moveToDone(scrumBoard, postIt, index) {
+          scrumBoard.done.push(postIt);
+          scrumBoard.inprogress.splice(index, 1);
+        },
+        moveToBacklog(scrumBoard, postIt, index) {
+          scrumBoard.backlog.push(postIt);
+          scrumBoard.done.splice(index, 1);
+        },
+        async getMyScrumboards() {
+            const response = await fetch('api/scrumboard/myscrumboards', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userID: this.userData.userID})
+            });
+            let boards = await response.json();
+            this.scrumBoards = boards.scrumboards;
+        },
+        async saveChangesProject(scrumBoard) {
+            const response = await fetch('api/scrumboard/savechanges', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({scrumboardID: scrumBoard.scrumboardID, backlog: scrumBoard.backlog, todo: scrumBoard.todo, inprogress: scrumBoard.inprogress, done: scrumBoard.done})
+            })
+            this.getMyScrumboards();
+        },
+        async addMemberToProject(scrumBoard) {
+            const response = await fetch('api/scrumboard/addmember', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username: this.newMember, scrumboardID: scrumBoard.scrumboardID})
+            })
+            if (!response.ok) {
+              alert("User does not exists");
+            }
+            else {
+              alert(this.newMember + " added to: " + scrumBoard.projectName);
+            }
+            this.newMember = "";
+        },
+        async deleteProject(scrumBoard) {
+            const response = await fetch('api/scrumboard/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({userID: this.userData.userID, scrumboardID: scrumBoard.scrumboardID})
+            })
+            if (!response.ok) {
+                alert(scrumBoard.projectName + " is removed from your space.");
+            }
+            else {
+                alert(scrumBoard.projectName + " is removed from you and your team members space");
+            }
+            this.getMyScrumboards();
+        }
+    },
+    beforeMount() {
+        // this.getMyScrumboards();
+    }
+});
+
 
 /**
  * Routes to the journal page and the scrumboard page.
  */
-const routes = [{path: '/journal', component: journalScreen}];
+const routes = [{path: '/journal', component: journalScreen},
+                {path: '/scrumboard', component: scrumBoard},];
 const router = new VueRouter({routes});
 
 /**

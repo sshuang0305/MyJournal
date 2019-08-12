@@ -16,6 +16,7 @@
         <mapping class="nl.sogyo.myjournal.domain.Day"/>
         <mapping class="nl.sogyo.myjournal.domain.Task"/>
         <mapping class="nl.sogyo.myjournal.domain.Note"/>
-        
+        <mapping class="nl.sogyo.myjournal.domain.Scrumboard"/>
+        <mapping class="nl.sogyo.myjournal.domain.UserStory"/>
     </session-factory>
 </hibernate-configuration>

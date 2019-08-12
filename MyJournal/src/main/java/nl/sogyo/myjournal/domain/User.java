@@ -20,6 +20,10 @@ public class User{
 	
 	@OneToMany(mappedBy="user",  cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Day> days = new HashSet<Day>();
+	
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinTable(name = "user_scrumboard", joinColumns = @JoinColumn(name = "userID"), inverseJoinColumns = @JoinColumn(name = "scrumboardID"))
+	private Set<Scrumboard> scrumboards = new HashSet<Scrumboard>();
 
 	public User() {
 
@@ -62,5 +66,22 @@ public class User{
 		return true;
 	}
 
+	public Set<Scrumboard> getScrumboards() {
+		return this.scrumboards;
+	}
 	
+	public void setScrumboards(Set<Scrumboard> scrumboards) {
+		this.scrumboards = scrumboards;
+	}
+	
+	public void addScrumboard(Scrumboard scrumboard) {
+		this.scrumboards.add(scrumboard);
+		scrumboard.getUsers().add(this);
+	}
+	
+	public void removeScrumboard(Scrumboard scrumboard) {
+		this.scrumboards.remove(scrumboard);
+		scrumboard.getUsers().remove(this);
+	}
+
 }
