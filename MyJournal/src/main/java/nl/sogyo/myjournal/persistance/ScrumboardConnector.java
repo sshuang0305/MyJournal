@@ -48,20 +48,14 @@ public class ScrumboardConnector {
 	    Criteria cr = session.createCriteria(User.class);
 	    cr.add(Restrictions.eq("userID", userID));
 	    User user = (User) cr.uniqueResult();
+	    
+	    ArrayList<Scrumboard> scrumboards = new ArrayList<Scrumboard>();
+	    for (Scrumboard scrumboard : user.getScrumboards()) {
+	    	scrumboards.add(scrumboard);
+	    }
 	    tx.commit();
-	    
-	    config = new Configuration().configure().addAnnotatedClass(Scrumboard.class);
-	    reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    sf = config.buildSessionFactory(reg);
-	    session = sf.openSession();
-	    tx = session.beginTransaction();
-	    cr = session.createCriteria(Scrumboard.class);
-	    cr.createAlias("users", "users");
-	    cr.add(Restrictions.eq("user", user));
-	    ArrayList<Scrumboard> scrumboards = (ArrayList<Scrumboard>) cr.list();
-	    
 	    return scrumboards;
-//	    return null;
+
 	}
 	
 	

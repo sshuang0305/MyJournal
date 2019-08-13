@@ -21,7 +21,7 @@ public class UserStory {
 	
 	private String storyText;
 	
-	private BoardState state;
+	private String state;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scrumboardID")
@@ -33,24 +33,16 @@ public class UserStory {
 	
 	public UserStory(String storyText, BoardState state) {
 		this.storyText = storyText;
-		this.state = state;
+		this.state = state.toString();
 	}
 
 	public String getStoryText() {
 		return storyText;
 	}
 
-//	public void setStoryText(String storyText) {
-//		this.storyText = storyText;
-//	}
-
-	public BoardState getState() {
+	public String getState() {
 		return state;
 	}
-
-//	public void setState(BoardState state) {
-//		this.state = state;
-//	}
 	
 	public void setScrumboard(Scrumboard scrumboard) {
 		this.scrumboard = scrumboard;

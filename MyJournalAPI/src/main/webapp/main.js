@@ -294,6 +294,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
             </form>
 
             <div v-for="scrumBoard in scrumBoards">
+                {{scrumBoard.userStories.backlog}}
                 <div class="scrumboard">
                     <nav class="navbar navbar-expand-lg navbar-dark bg-info">
                         <h3 class="navbar-brand"> PROJECT: {{scrumBoard.projectName}} </h3>
@@ -310,10 +311,10 @@ const scrumBoard = Vue.component('scumboard-screen', {
                         <thead> <th v-for="boardColumn in boardColumns"> {{boardColumn}} </th> </thead>
                         <tbody>
                             <tr>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.backlog"> <li @click="moveToToDo(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.todo"> <li @click="moveToInProgress(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.inprogress"> <li @click="moveToDone(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.done"> <li @click="moveToBacklog(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.backlog"> <li @click="moveToToDo(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.todo"> <li @click="moveToInProgress(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.inprogress"> <li @click="moveToDone(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.done"> <li @click="moveToBacklog(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
                             </tr>
                         </tbody>
                     </table>
@@ -377,7 +378,8 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 body: JSON.stringify({userID: this.userData.userID})
             });
             let boards = await response.json();
-            this.scrumBoards = boards.scrumboards;
+            this.scrumBoards = boards;
+            console.log(this.scrumBoards);
         },
         async saveChangesProject(scrumBoard) {
             const response = await fetch('api/scrumboard/savechanges', {
@@ -425,7 +427,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
         }
     },
     beforeMount() {
-        // this.getMyScrumboards();
+        this.getMyScrumboards();
     }
 });
 

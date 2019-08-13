@@ -24,7 +24,6 @@ public class ScrumboardBoardsGetter {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response initialize(@Context HttpServletRequest request, ScrumboardData scrumboardData) {
-	
 		int userID = scrumboardData.getUserID();
 		ArrayList<Scrumboard> scrumboards = ScrumboardConnector.getBoards(userID);
 		String output = new JSONResultProcessor().createScrumboardsResponse(scrumboards);

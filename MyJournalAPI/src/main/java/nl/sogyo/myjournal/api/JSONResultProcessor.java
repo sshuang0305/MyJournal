@@ -52,13 +52,13 @@ public class JSONResultProcessor {
 		return jsArray;
 	}
 	
-	public String createScrumboardResponse(Scrumboard scrumboard) {
+	public JSONObject createScrumboardResponse(Scrumboard scrumboard) {
 
 		JSONObject result = new JSONObject();
 		result.put("scrumboardID", scrumboard.getScrumboardID());
 		result.put("projectName", scrumboard.getProjectName());
-		result.put("userstories", userStoriesToJson(scrumboard.getUserStories()));
-		return result.toJSONString();
+		result.put("userStories", userStoriesToJson(scrumboard.getUserStories()));
+		return result;
 	}
 	
 	public JSONObject userStoriesToJson(Set<UserStory> stories) {
@@ -68,13 +68,13 @@ public class JSONResultProcessor {
 		JSONArray inprogress = new JSONArray();
 		JSONArray done = new JSONArray();
 		for (UserStory story : stories) {
-			if (story.getState() == BoardState.BACKLOG) {
+			if (story.getState().equals(BoardState.BACKLOG.toString())) {
 				backlog.add(story.getStoryText());
 			}
-			else if (story.getState() == BoardState.TODO) {
+			else if (story.getState().equals(BoardState.TODO.toString())) {
 				todo.add(story.getStoryText());
 			}
-			else if (story.getState() == BoardState.INPROGRESS) {
+			else if (story.getState().equals(BoardState.INPROGRESS.toString())) {
 				inprogress.add(story.getStoryText());
 			}
 			else {
@@ -89,17 +89,12 @@ public class JSONResultProcessor {
 	}
 	
 	public String createScrumboardsResponse(ArrayList<Scrumboard> scrumboards) {
-		JSONObject result = new JSONObject();
 		JSONArray JSONscrumboards = new JSONArray();
-		
 		for (Scrumboard board : scrumboards) {
-			String scrumboard = createScrumboardResponse(board);
+			JSONObject scrumboard = createScrumboardResponse(board);
 			JSONscrumboards.add(scrumboard);
 		}
-		result.put("scrumboards", JSONscrumboards);
-		return result.toJSONString();
+		return JSONscrumboards.toJSONString();
 	}
-
-
 }
 

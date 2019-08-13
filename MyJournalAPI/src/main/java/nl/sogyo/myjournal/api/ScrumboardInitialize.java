@@ -33,7 +33,7 @@ public class ScrumboardInitialize {
 		if (newScrumboard == null) {
 			return Response.status(404).entity("").build();
 		}
-		String output = new JSONResultProcessor().createScrumboardResponse(newScrumboard);
+		String output = new JSONResultProcessor().createScrumboardResponse(newScrumboard).toJSONString();
 		return Response.status(200).entity(output).build();
 	}
 }
