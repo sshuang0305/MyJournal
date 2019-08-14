@@ -61,8 +61,8 @@ public class JSONResultProcessor {
 		return result;
 	}
 	
-	public JSONObject userStoriesToJson(Set<UserStory> stories) {
-		JSONObject result = new JSONObject();
+	public JSONArray userStoriesToJson(Set<UserStory> stories) {
+		JSONArray result = new JSONArray();
 		JSONArray backlog = new JSONArray();
 		JSONArray todo = new JSONArray();
 		JSONArray inprogress = new JSONArray();
@@ -81,10 +81,10 @@ public class JSONResultProcessor {
 				done.add(story.getStoryText());
 			}
 		}
-		result.put("backlog", backlog);
-		result.put("todo", todo);
-		result.put("inprogress", inprogress);
-		result.put("done", done);
+		result.add(backlog);
+		result.add(todo);
+		result.add(inprogress);
+		result.add( done);
 		return result;
 	}
 	

@@ -294,7 +294,6 @@ const scrumBoard = Vue.component('scumboard-screen', {
             </form>
 
             <div v-for="scrumBoard in scrumBoards">
-                {{scrumBoard.userStories.backlog}}
                 <div class="scrumboard">
                     <nav class="navbar navbar-expand-lg navbar-dark bg-info">
                         <h3 class="navbar-brand"> PROJECT: {{scrumBoard.projectName}} </h3>
@@ -311,10 +310,15 @@ const scrumBoard = Vue.component('scumboard-screen', {
                         <thead> <th v-for="boardColumn in boardColumns"> {{boardColumn}} </th> </thead>
                         <tbody>
                             <tr>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.backlog"> <li @click="moveToToDo(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.todo"> <li @click="moveToInProgress(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.inprogress"> <li @click="moveToDone(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
-                                <td> <ul class="list-group list-group-hover" v-for="(postIt, index) in scrumBoard.userStories.done"> <li @click="moveToBacklog(scrumBoard, postIt, index)" class="post-it"> {{postIt}} </li> </ul> </td>
+                                <td  v-for="(column, columnindex) in scrumBoard.userStories">
+                                    <ul class="list-group list-group-hover" v-for="(postIt, index) in column">
+                                        <li class="post-it d-flex justify-content-between">
+                                            <button type="button" class="btn btn-info"> < </button>
+                                            <p class="post-it-text"> {{postIt}} </p>
+                                            <button @click="movePostItToNext(scrumBoard.userStories, columnindex, postIt, index)" type="button" class="btn btn-info"> > </button>
+                                        </li>
+                                    </ul>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -343,7 +347,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 alert("Project already exists. Please choose another projectname.");
             }
             else {
-                this.board = {projectName: "", stories: {backlog: [], todo: [], inprogress: [], done: []}};
+                this.board = {projectName: "", userstories: {backlog: [], todo: [], inprogress: [], done: []}};
                 this.getMyScrumboards();
             }
         },
@@ -352,21 +356,9 @@ const scrumBoard = Vue.component('scumboard-screen', {
           this.addedStories += this.userStory + ". ";
           this.userStory = "";
         },
-        moveToToDo(scrumBoard, postIt, index) {
-          scrumBoard.todo.push(postIt);
-          scrumBoard.backlog.splice(index, 1);
-        },
-        moveToInProgress(scrumBoard, postIt, index) {
-          scrumBoard.inprogress.push(postIt);
-          scrumBoard.todo.splice(index, 1);
-        },
-        moveToDone(scrumBoard, postIt, index) {
-          scrumBoard.done.push(postIt);
-          scrumBoard.inprogress.splice(index, 1);
-        },
-        moveToBacklog(scrumBoard, postIt, index) {
-          scrumBoard.backlog.push(postIt);
-          scrumBoard.done.splice(index, 1);
+        movePostItToNext(userstories, columnindex, postIt, index) {
+            userstories[(columnindex + 1) % 4].push(postIt);
+            userstories[columnindex].splice(index, 1);
         },
         async getMyScrumboards() {
             const response = await fetch('api/scrumboard/myscrumboards', {
@@ -377,8 +369,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 },
                 body: JSON.stringify({userID: this.userData.userID})
             });
-            let boards = await response.json();
-            this.scrumBoards = boards;
+            this.scrumBoards = await response.json();
             console.log(this.scrumBoards);
         },
         async saveChangesProject(scrumBoard) {
