@@ -68,17 +68,21 @@ public class JSONResultProcessor {
 		JSONArray inprogress = new JSONArray();
 		JSONArray done = new JSONArray();
 		for (UserStory story : stories) {
+			JSONObject userStoryObj = new JSONObject();
+			userStoryObj.put("storyID", story.getStoryID());
+			userStoryObj.put("storyText",story.getStoryText());
+			userStoryObj.put("boardState", story.getState());
 			if (story.getState().equals(BoardState.BACKLOG.toString())) {
-				backlog.add(story.getStoryText());
+				backlog.add(userStoryObj);
 			}
 			else if (story.getState().equals(BoardState.TODO.toString())) {
-				todo.add(story.getStoryText());
+				todo.add(userStoryObj);
 			}
 			else if (story.getState().equals(BoardState.INPROGRESS.toString())) {
-				inprogress.add(story.getStoryText());
+				inprogress.add(userStoryObj);
 			}
 			else {
-				done.add(story.getStoryText());
+				done.add(userStoryObj);
 			}
 		}
 		result.add(backlog);

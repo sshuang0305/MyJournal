@@ -14,6 +14,7 @@ import org.hibernate.service.ServiceRegistryBuilder;
 
 import nl.sogyo.myjournal.domain.Scrumboard;
 import nl.sogyo.myjournal.domain.User;
+import nl.sogyo.myjournal.domain.UserStory;
 
 public class ScrumboardConnector {
 
@@ -59,28 +60,24 @@ public class ScrumboardConnector {
 	}
 	
 	
+	public static void update(int storyID, String boardState) {
+		
+	    Configuration config = new Configuration().configure().addAnnotatedClass(UserStory.class);
+	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
+	    SessionFactory sf = config.buildSessionFactory(reg);
+	    Session session = sf.openSession();
+
+	    Transaction tx = session.beginTransaction();
+	    Criteria cr = session.createCriteria(UserStory.class);
+	    cr.add(Restrictions.eq("storyID", storyID));
+	    UserStory userstory = (UserStory) cr.uniqueResult();
+	    
+	    userstory.setState(boardState);
+	    session.update(userstory);
+	    tx.commit();
+	}
+	
 }
-//	
-//	public static void update(String[] backlog, String[] todo, String[] inprogress, String[] done, int scrumboardID) {
-//		
-//	    Configuration config = new Configuration().configure().addAnnotatedClass(Scrumboard.class);
-//	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-//	    SessionFactory sf = config.buildSessionFactory(reg);
-//	    Session session = sf.openSession();
-//
-//	    Transaction tx = session.beginTransaction();
-//	    Criteria cr = session.createCriteria(Scrumboard.class);
-//	    cr.add(Restrictions.eq("scrumboardID", scrumboardID));
-//	    Scrumboard scrumboard = (Scrumboard) cr.uniqueResult();
-//	    
-//		scrumboard.setBacklog(backlog);
-//		scrumboard.setTodo(todo);
-//		scrumboard.setInProgress(inprogress);
-//		scrumboard.setDone(done);
-//
-//	    session.update(scrumboard);
-//	    tx.commit();
-//	}
 //	
 //	public static Scrumboard delete (int userID, int scrumboardID) {
 //	    Configuration config = new Configuration().configure().addAnnotatedClass(Scrumboard.class);

@@ -72,6 +72,11 @@ ul.list-group.list-group-hover li:hover{
     filter: brightness(90%);
 }
 
+ul {
+  padding: 0;
+  margin: 0;
+}
+
 .checkbox-container input {
   display: none;
 }
@@ -209,23 +214,29 @@ table.week-calendar td:hover {
   border-width: thin;
 }
 
-.post-it {
-  text-decoration:none;
-  color:#000;
-  background:#d1f0ff;
-  display:block;
-  height:10em;
-  width:10em;
-  padding: 0;
-  margin: 0;
-
-  border-style: solid;
-  border-width: thin;
-  border-color: #7e8182;
+table.scrumboard-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+table.scrumboard-table td {
+padding:0; margin:0;
 }
 
-.post-it-text {
-    display:inline-block;
+.post-it-container {
+  display: block;
+}
+
+.post-it {
+    border-style: solid;
+    border-width: thin;
+    border-color: #7e8182;
+    text-decoration:none;
+    color:#000;
+    margin: 0;
+    background:#d1f0ff;
+    height:10em;
+    width:10em;
+    display:block;
     padding:1em;
     word-wrap: break-word;
     overflow: auto;

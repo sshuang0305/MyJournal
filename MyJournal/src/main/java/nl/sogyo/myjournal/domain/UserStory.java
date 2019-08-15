@@ -44,7 +44,15 @@ public class UserStory {
 		return state;
 	}
 	
+	public void setState(String state) {
+		this.state = state;
+	}
+	
 	public void setScrumboard(Scrumboard scrumboard) {
 		this.scrumboard = scrumboard;
+	}
+	
+	public int getStoryID() {
+		return storyID;
 	}
 }

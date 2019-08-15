@@ -9,6 +9,7 @@ public class ScrumboardData {
 	private String[] stories;
 
 	private String scrumboardID;
+	private String[][] userStories;
 
 	public ScrumboardData() {
 
@@ -29,5 +30,9 @@ public class ScrumboardData {
 	
 	public int getUserID() {
 		return userID;
+	}
+	
+	public String[][] getUserStories() {
+		return userStories;
 	}
 }
