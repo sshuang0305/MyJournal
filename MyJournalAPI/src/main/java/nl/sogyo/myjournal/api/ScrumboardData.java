@@ -8,8 +8,9 @@ public class ScrumboardData {
 	private String projectName;
 	private String[] stories;
 
-	private String scrumboardID;
+	private int scrumboardID;
 	private String[][] userStories;
+	private String username;
 
 	public ScrumboardData() {
 
@@ -24,7 +25,7 @@ public class ScrumboardData {
 		return stories;
 	}
 
-	public String getScrumboardID() {
+	public int getScrumboardID() {
 		return scrumboardID;
 	}
 	
@@ -34,5 +35,9 @@ public class ScrumboardData {
 	
 	public String[][] getUserStories() {
 		return userStories;
+	}
+	
+	public String getUsername() {
+		return username;
 	}
 }

@@ -41,4 +41,11 @@ public class UserConnector {
 	    }
 	    return null;
 	}
+	
+	public User findUser(String username) {
+	    User user = (User) criteria.add(Restrictions.eq("username", username)).uniqueResult();
+	    tx.commit();
+	    return user;
+	}
+
 }

@@ -83,5 +83,4 @@ public class User{
 		this.scrumboards.remove(scrumboard);
 		scrumboard.getUsers().remove(this);
 	}
-
 }

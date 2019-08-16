@@ -423,12 +423,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 },
                 body: JSON.stringify({userID: this.userData.userID, scrumboardID: scrumBoard.scrumboardID})
             })
-            if (!response.ok) {
-                alert(scrumBoard.projectName + " is removed from your space.");
-            }
-            else {
-                alert(scrumBoard.projectName + " is removed from you and your team members space");
-            }
+            alert(scrumBoard.projectName + " is removed.");
             this.getMyScrumboards();
         }
     },
