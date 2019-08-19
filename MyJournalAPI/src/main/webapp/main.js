@@ -421,7 +421,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({userID: this.userData.userID, scrumboardID: scrumBoard.scrumboardID})
+                body: JSON.stringify({scrumboardID: scrumBoard.scrumboardID})
             })
             alert(scrumBoard.projectName + " is removed.");
             this.getMyScrumboards();

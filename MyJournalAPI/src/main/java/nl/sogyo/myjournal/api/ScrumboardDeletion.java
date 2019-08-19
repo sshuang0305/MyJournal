@@ -19,9 +19,8 @@ public class ScrumboardDeletion {
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response delete(@Context HttpServletRequest request, ScrumboardData scrumboardData) {
-		int userID = scrumboardData.getUserID();
 		int scrumboardID = scrumboardData.getScrumboardID();
-		ScrumboardConnector.delete(scrumboardID, userID);
+		ScrumboardConnector.delete(scrumboardID);
 		return Response.status(200).entity("").build();
 	}
 }

@@ -103,7 +103,7 @@ public class ScrumboardConnector {
 	}
 
 	
-	public static void delete (int scrumboardID, int userID) {
+	public static void delete (int scrumboardID) {
 		Configuration config = new Configuration().configure().addAnnotatedClass(Scrumboard.class);
 	    ServiceRegistry reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
 	    SessionFactory sf = config.buildSessionFactory(reg);
@@ -113,19 +113,8 @@ public class ScrumboardConnector {
 	    Criteria cr = session.createCriteria(Scrumboard.class);
 	    cr.add(Restrictions.eq("scrumboardID", scrumboardID));
 	    Scrumboard scrumboard = (Scrumboard) cr.uniqueResult();
-	    
-		config = new Configuration().configure().addAnnotatedClass(User.class);
-	    reg = new ServiceRegistryBuilder().applySettings(config.getProperties()).buildServiceRegistry();
-	    sf = config.buildSessionFactory(reg);
-	    session = sf.openSession();
+	    session.delete(scrumboard);	    
 
-	    tx = session.beginTransaction();
-	    cr = session.createCriteria(User.class);
-	    cr.add(Restrictions.eq("userID", userID));
-	    User user = (User) cr.uniqueResult();
-	    
-	    user.removeScrumboard(scrumboard);
-	    session.merge(user);
 	    tx.commit();
 	}
 }
