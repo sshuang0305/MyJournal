@@ -15,6 +15,7 @@ local.properties
 .settings/
 .loadpath
 .project
+.classpath
 
 ### Java
 *.class
@@ -28,5 +29,3 @@ local.properties
 *.ear
 /target/
 
-.project
-.classpath
