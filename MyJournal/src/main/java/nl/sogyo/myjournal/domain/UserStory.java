@@ -1,14 +1,14 @@
+/**
+ * UserStory.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
+
 package nl.sogyo.myjournal.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "userstories")
@@ -19,19 +19,18 @@ public class UserStory {
 	@Column(name="storyID", updatable = false, nullable = false)
 	private int storyID;
 	
-	private String storyText;
-	
-	private String state;
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "scrumboardID")
 	private Scrumboard scrumboard;
+	
+	private String storyText;
+	private String state;
 	
 	public UserStory() {
 		
 	}
 	
-	public UserStory(String storyText, BoardState state) {
+	public UserStory(String storyText, ScrumboardColumn state) {
 		this.storyText = storyText;
 		this.state = state.toString();
 	}

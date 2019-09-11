@@ -1,4 +1,11 @@
 /**
+ * main.js
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
+/**
  * The screen shown before the app starts to login or register an user.
  */
 Vue.component('start-screen', {

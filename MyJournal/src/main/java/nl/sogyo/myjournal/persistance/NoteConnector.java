@@ -1,3 +1,10 @@
+/**
+ * NoteConnector.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.persistance;
 
 import org.hibernate.Criteria;
@@ -43,7 +50,6 @@ public class NoteConnector {
 	    Transaction tx = session.beginTransaction();
 	    Criteria criteria = session.createCriteria(Note.class);
 	    Note note = (Note) criteria.add(Restrictions.eq("noteID", noteID)).uniqueResult();
-	    System.out.println(note);
 	    session.delete(note);
 		tx.commit();
 	}

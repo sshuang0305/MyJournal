@@ -1,3 +1,10 @@
+/**
+ * JSONResultProcessor.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.api;
 
 import java.util.ArrayList;
@@ -72,13 +79,13 @@ public class JSONResultProcessor {
 			userStoryObj.put("storyID", story.getStoryID());
 			userStoryObj.put("storyText",story.getStoryText());
 			userStoryObj.put("boardState", story.getState());
-			if (story.getState().equals(BoardState.BACKLOG.toString())) {
+			if (story.getState().equals(ScrumboardColumn.BACKLOG.toString())) {
 				backlog.add(userStoryObj);
 			}
-			else if (story.getState().equals(BoardState.TODO.toString())) {
+			else if (story.getState().equals(ScrumboardColumn.TODO.toString())) {
 				todo.add(userStoryObj);
 			}
-			else if (story.getState().equals(BoardState.INPROGRESS.toString())) {
+			else if (story.getState().equals(ScrumboardColumn.INPROGRESS.toString())) {
 				inprogress.add(userStoryObj);
 			}
 			else {

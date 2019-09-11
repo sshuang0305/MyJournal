@@ -1,3 +1,10 @@
+/**
+ * ScrumboardBoardUpdate.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.api;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,20 +21,20 @@ import nl.sogyo.myjournal.persistance.ScrumboardConnector;
 
 @Path("scrumboard/savechanges")
 public class ScrumboardUpdate {
-	  /**
-	    * @param request
-	    * @return
-	    */
-	    @PUT
-	    @Consumes(MediaType.APPLICATION_JSON)
-	    @Produces(MediaType.APPLICATION_JSON)
-	    public Response initialize(@Context HttpServletRequest request, ScrumboardData scrumboardData) {
-	    	String[][] userStories = scrumboardData.getUserStories();
-	    	for (String[] userStory : userStories) {
-		    	int storyID = Integer.parseInt(userStory[0]);
-		    	String boardState = userStory[1];
-				ScrumboardConnector.update(storyID, boardState);
-	    	}
-			return Response.status(200).entity("").build();
-	  }
+	/**
+    * @param request
+    * @return
+    */
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response initialize(@Context HttpServletRequest request, ScrumboardData scrumboardData) {
+    	String[][] userStories = scrumboardData.getUserStories();
+    	for (String[] userStory : userStories) {
+	    	int storyID = Integer.parseInt(userStory[0]);
+	    	String boardState = userStory[1];
+			ScrumboardConnector.update(storyID, boardState);
+    	}
+		return Response.status(200).entity("").build();
+  }
 }

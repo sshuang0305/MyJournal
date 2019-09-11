@@ -1,3 +1,10 @@
+/**
+ * ScrumboardBoardData.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.api;
 
 import java.util.*;

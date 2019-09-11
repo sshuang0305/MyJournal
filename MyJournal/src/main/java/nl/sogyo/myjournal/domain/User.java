@@ -1,7 +1,13 @@
+/**
+ * User.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 

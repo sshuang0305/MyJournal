@@ -1,3 +1,10 @@
+/**
+ * Scrumboard.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.domain;
 
 import java.util.*;
@@ -27,7 +34,7 @@ public class Scrumboard {
 	public Scrumboard(String name, Set<String> userStories) {
 		this.projectName = name;
 		for (String text : userStories) {
-			UserStory userStory = new UserStory(text, BoardState.BACKLOG);
+			UserStory userStory = new UserStory(text, ScrumboardColumn.BACKLOG);
 			this.addUserStory(userStory);
 		}
 	}

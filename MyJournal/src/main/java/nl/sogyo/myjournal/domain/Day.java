@@ -1,7 +1,13 @@
+/**
+ * Day.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -13,10 +19,7 @@ public class Day {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="dayID", updatable = false, nullable = false)
 	private int dayID;
-	
-	private String date;
-	private int dayRating;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userID")
 	private User user;
@@ -26,6 +29,9 @@ public class Day {
 	
 	@OneToMany(mappedBy="day", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<Note> notes = new HashSet<Note>();
+	
+	private int dayRating;
+	private String date;
 
 	public Day() {
 

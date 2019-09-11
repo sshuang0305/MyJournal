@@ -1,3 +1,10 @@
+/**
+ * ScrumboardConnector.java
+ *
+ * @author Shan Shan Huang
+ * @since 08-07-19
+ */
+
 package nl.sogyo.myjournal.persistance;
 
 import java.util.ArrayList;
