@@ -366,12 +366,12 @@ const scrumBoard = Vue.component('scumboard-screen', {
           this.userStory = "";
         },
         movePostItToPrevious(scrumboard, columnindex, postIt, index) {
-            scrumboard.userStories[columnindex][index].boardState = this.boardColumns[(((columnindex - 1) % 4) + 4) % 4];
+            scrumboard.userStories[columnindex][index].ScrumboardColumn = this.boardColumns[(((columnindex - 1) % 4) + 4) % 4];
             scrumboard.userStories[(((columnindex - 1) % 4) + 4) % 4].push(postIt);
             scrumboard.userStories[columnindex].splice(index, 1);
         },
         movePostItToNext(scrumboard, columnindex, postIt, index) {
-            scrumboard.userStories[columnindex][index].boardState = this.boardColumns[(columnindex + 1) % 4];
+            scrumboard.userStories[columnindex][index].ScrumboardColumn = this.boardColumns[(columnindex + 1) % 4];
             scrumboard.userStories[(columnindex + 1) % 4].push(postIt);
             scrumboard.userStories[columnindex].splice(index, 1);
         },
@@ -392,7 +392,7 @@ const scrumBoard = Vue.component('scumboard-screen', {
                 for (story in scrumBoard.userStories[column]) {
                     let userStory = []
                     userStory.push(scrumBoard.userStories[column][story].storyID);
-                    userStory.push(scrumBoard.userStories[column][story].boardState);
+                    userStory.push(scrumBoard.userStories[column][story].ScrumboardColumn);
                     userStories.push(userStory);
                 }
             }
